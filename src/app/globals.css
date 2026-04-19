@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Site-default theme (dark editorial)
-   All tokens here are read by Tailwind v4 utilities via @theme.
-   Per-project route layouts override via .theme-* class.
+   Site-default theme (variant 1 — dark minimal neon)
+   Used by: / (home) and the site shell.
+   Per-project routes (/projects/<slug>) override via .theme-<slug>.
+   Site-aesthetic variants (/styles/*) override via .variant-<name>.
    ============================================================ */
 
 @theme {
-  /* Site-default palette */
   --color-bg: #0b0b0f;
   --color-fg: #f5f5f2;
   --color-muted: #8c8c96;
@@ -21,12 +21,14 @@
   --color-danger: oklch(0.7 0.2 20);
   --color-glow: color-mix(in oklch, var(--color-primary), transparent 60%);
 
-  /* Typography */
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-terminal-display: var(--font-orbitron), sans-serif;
+  --font-terminal-body: var(--font-rajdhani), sans-serif;
+  --font-grotesk: var(--font-space-grotesk), sans-serif;
 
-  /* Radii + motion */
   --radius-base: 12px;
   --radius-pill: 9999px;
   --motion-fast: 120ms;
@@ -36,9 +38,7 @@
 }
 
 /* ============================================================
-   Per-project theme worlds
-   Applied on <main className="theme-*"> in each project layout.
-   Shell (Nav/Footer) stays on site-default theme.
+   PROJECT THEMES (scoped to /projects/<slug>/ layouts)
    ============================================================ */
 
 .theme-stocksaathi {
@@ -81,11 +81,86 @@
   --color-danger: #ff3366;
   --color-warning: #ffd700;
   --color-glow: color-mix(in oklch, #00ff9d, transparent 50%);
-  --radius-base: 2px; /* sharp cyberpunk corners */
+  --radius-base: 2px;
 }
 
 /* ============================================================
-   Base element styling
+   AESTHETIC VARIANTS (for side-by-side comparison at /styles/*)
+   Once a winner is chosen, the losing variants are deleted and
+   the winner's tokens replace the site-default @theme block.
+   ============================================================ */
+
+/* Variant 2 — WARM EDITORIAL
+   Stripe/Linear-inspired. Cream paper, deep indigo accent,
+   Instrument Serif at massive display sizes, long serif body,
+   generous whitespace, drop caps, side-rail marginalia. */
+.variant-editorial {
+  --color-bg: #faf7f2;
+  --color-fg: #1a1a1a;
+  --color-muted: #6b6b6b;
+  --color-primary: #635bff; /* stripe indigo */
+  --color-primary-fg: #faf7f2;
+  --color-surface: #faf7f2;
+  --color-surface-2: #f2eee6;
+  --color-border: #d9d3c7;
+  --color-accent-warm: #c4704e; /* muted terracotta */
+  --color-accent-deep: #1a2b5c; /* deep inkwell blue */
+  --color-glow: color-mix(in oklch, #635bff, transparent 85%);
+  --font-display: var(--font-instrument-serif), Georgia, serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --radius-base: 4px;
+  color-scheme: light;
+}
+
+/* Variant 3 — NEON TERMINAL / CYBERPUNK MAXIMALIST
+   Pure black with heavy neon. Scanlines, grid lines,
+   terminal cursor blink. Orbitron display + Rajdhani body.
+   Distinct from theme-maglock: more extreme, more immersive,
+   more decoration. This is a SITE-WIDE aesthetic, not a
+   per-project theme. */
+.variant-cyberpunk {
+  --color-bg: #000000;
+  --color-fg: #d6e7ff;
+  --color-muted: #5d6c8a;
+  --color-primary: #00ffa3;
+  --color-primary-fg: #000000;
+  --color-surface: #000000;
+  --color-surface-2: #05060a;
+  --color-border: #14213d;
+  --color-accent-cyan: #00e0ff;
+  --color-accent-magenta: #ff00aa;
+  --color-accent-amber: #ffc800;
+  --color-danger: #ff2e6e;
+  --color-glow: color-mix(in oklch, #00ffa3, transparent 40%);
+  --font-display: var(--font-orbitron), sans-serif;
+  --font-body: var(--font-rajdhani), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  --radius-base: 2px;
+}
+
+/* Variant 4 — BRUTALIST / MONO-GRID / GLASS HYBRID
+   Swiss/brutalist grid, hairline black borders, mono type,
+   one cobalt accent, zero radius. Glass panels on hover
+   (backdrop-blur + translucent). Visible grid overlay. */
+.variant-brutalist {
+  --color-bg: #f4f4f0;
+  --color-fg: #0a0a0a;
+  --color-muted: #4a4a4a;
+  --color-primary: #0033ff; /* cobalt */
+  --color-primary-fg: #f4f4f0;
+  --color-surface: #f4f4f0;
+  --color-surface-2: #ebebe5;
+  --color-border: #0a0a0a;
+  --color-glow: color-mix(in oklch, #0033ff, transparent 80%);
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-body: var(--font-space-grotesk), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  --radius-base: 0px;
+  color-scheme: light;
+}
+
+/* ============================================================
+   BASE STYLES
    ============================================================ */
 
 html {
@@ -108,7 +183,10 @@ body {
 main {
   background: var(--color-bg);
   color: var(--color-fg);
-  transition: background-color var(--motion-base) var(--motion-ease);
+  font-family: var(--font-body);
+  transition:
+    background-color var(--motion-base) var(--motion-ease),
+    color var(--motion-base) var(--motion-ease);
 }
 
 ::selection {
@@ -116,14 +194,12 @@ main {
   color: var(--color-primary-fg);
 }
 
-/* Focus ring — theme-colored, never removed */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Reduced-motion respect */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -133,4 +209,111 @@ main {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ============================================================
+   VARIANT-SPECIFIC UTILITIES + DECORATIONS
+   ============================================================ */
+
+/* Cyberpunk scanlines — tiled PNG would be nicer but this is pure CSS */
+.variant-cyberpunk-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 255, 163, 0.025) 2px,
+      rgba(0, 255, 163, 0.025) 3px
+    );
+  mix-blend-mode: screen;
+  z-index: 1;
+}
+
+/* Cyberpunk grid overlay — fading radial grid */
+.variant-cyberpunk-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 255, 163, 0.08) 1px, transparent 1px),
+    linear-gradient(to right, rgba(0, 255, 163, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 80%);
+}
+
+/* Cyberpunk animated cursor blink */
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.variant-cyberpunk-cursor::after {
+  content: "_";
+  display: inline-block;
+  margin-left: 0.1em;
+  color: var(--color-primary);
+  animation: cursor-blink 1s steps(1) infinite;
+}
+
+/* Cyberpunk subtle chromatic-aberration on headings */
+.variant-cyberpunk-glitch {
+  text-shadow:
+    1.5px 0 0 rgba(255, 0, 170, 0.45),
+    -1.5px 0 0 rgba(0, 224, 255, 0.45);
+}
+
+/* Editorial drop cap */
+.variant-editorial-dropcap::first-letter {
+  float: left;
+  font-family: var(--font-instrument-serif), serif;
+  font-size: 5.2em;
+  line-height: 0.85;
+  padding-right: 0.12em;
+  padding-top: 0.05em;
+  color: var(--color-primary);
+}
+
+/* Editorial paper grain texture — subtle SVG noise */
+.variant-editorial-paper {
+  background-color: var(--color-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.05 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  background-blend-mode: multiply;
+}
+
+/* Brutalist grid overlay */
+.variant-brutalist-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(10, 10, 10, 0.06) 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
+}
+
+/* Brutalist hairline divider used across sections */
+.variant-brutalist-rule {
+  background: var(--color-border);
+  height: 1px;
+  width: 100%;
+}
+
+/* Brutalist glass card on hover — backdrop-blur + ultra-thin translucent layer */
+.variant-brutalist-glass-hover {
+  transition:
+    transform 240ms var(--motion-ease),
+    background-color 240ms var(--motion-ease),
+    backdrop-filter 240ms var(--motion-ease);
+}
+.variant-brutalist-glass-hover:hover {
+  background-color: rgba(244, 244, 240, 0.6);
+  backdrop-filter: blur(14px);
 }
