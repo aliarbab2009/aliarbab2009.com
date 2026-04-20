@@ -7,7 +7,7 @@ const compat = new FlatCompat({
 const config = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: ["_repos/**", "maglock_protocol/**", ".next/**", "out/**", "node_modules/**"],
+    ignores: ["_repos/**", "_archive/**", "maglock_protocol/**", ".next/**", "out/**", "node_modules/**"],
   },
 ];
 
