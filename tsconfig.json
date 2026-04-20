@@ -27,5 +27,5 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "_repos", "maglock_protocol", ".next", "out"]
+  "exclude": ["node_modules", "_repos", "_archive", "maglock_protocol", ".next", "out"]
 }
