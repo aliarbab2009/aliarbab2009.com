@@ -11,13 +11,30 @@
  * HARD RULE: only neutral academic milestones appear here. No
  * application deadlines, no college-specific dates, no decision dates.
  * Private deadlines live in PRIVATE_CALENDAR.md (gitignored).
+ *
+ * SCORE EDIT-FLOW (post-July 2026):
+ * AP scores release on a known date in early July 2026. When the
+ * scores land, edit each AP entry below to add `score: <1-5>`. The
+ * /about academic snapshot will swap the countdown for a "Score N"
+ * badge automatically — no other code change required. Until then,
+ * the countdown ticks down to the exam, then auto-flips to ✓.
+ *
+ *   Example:
+ *     { id: "ap-calc-bc", label: "AP Calculus BC",
+ *       at: "2026-05-11T08:00:00", subLabel: "Morning session",
+ *       score: 5 }     ← add this once score lands
  */
+
+/** AP exam score (1-5). 3+ is passing per College Board. */
+export type APScore = 1 | 2 | 3 | 4 | 5;
 
 export type Milestone = {
   id: string;
   label: string;
   at: string; // ISO string, offset-naive — browser renders as local time
   subLabel?: string;
+  /** Optional AP score, added post-result-release (~July 2026). */
+  score?: APScore;
 };
 
 export const MILESTONES: readonly Milestone[] = [
