@@ -1,5 +1,9 @@
 "use client";
 
+/* eslint-disable @next/next/no-html-link-for-pages -- root-layout error
+   boundary: <Link>/router may not exist when this renders. Plain <a> is
+   the correct primitive here. */
+
 import { useEffect } from "react";
 
 /**
@@ -19,9 +23,9 @@ export default function GlobalError({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    // P4.16 will wire Sentry.captureException here.
+    // P4.16 will wire Sentry.captureException here. console.error is
+    // allowed by the eslint config.
     if (process.env.NODE_ENV !== "production") {
-      // eslint-disable-next-line no-console
       console.error("[global-error.tsx]", error);
     }
   }, [error]);
