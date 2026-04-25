@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { getProjectBySlug } from "@/config/projects";
 import { siteConfig } from "@/config/site";
+import { JsonLd } from "@/components/seo/json-ld";
+import { projectJsonLd } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
 
 const project = getProjectBySlug("stocksaathi")!;
@@ -22,6 +24,7 @@ export const metadata: Metadata = buildMetadata({
 export default function StockSaathiPage() {
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-6 pt-16 pb-16 sm:pt-20">
+      <JsonLd data={projectJsonLd("stocksaathi")} />
       <div className="brutalist-grid" aria-hidden />
 
       {/* MASTHEAD */}
