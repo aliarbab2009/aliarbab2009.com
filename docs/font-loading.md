@@ -4,10 +4,10 @@ Two font families. Both self-hosted via `next/font/google`. Both load with `disp
 
 ## Loaded
 
-| Family             | Use                          | Source                |
-| ------------------ | ---------------------------- | --------------------- |
-| Space Grotesk      | Body, headings               | `next/font/google`    |
-| JetBrains Mono     | Code, numerics, ID-style UI  | `next/font/google`    |
+| Family         | Use                         | Source             |
+| -------------- | --------------------------- | ------------------ |
+| Space Grotesk  | Body, headings              | `next/font/google` |
+| JetBrains Mono | Code, numerics, ID-style UI | `next/font/google` |
 
 ## NOT loaded
 

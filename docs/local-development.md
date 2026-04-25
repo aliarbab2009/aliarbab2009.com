@@ -23,16 +23,16 @@ Drop these in `.env.local` (gitignored).
 
 ## Common commands
 
-| Command                   | Purpose                                              |
-| ------------------------- | ---------------------------------------------------- |
-| `pnpm dev`                | Local dev server with HMR                            |
-| `pnpm build`              | Production build to `.next/`                         |
-| `pnpm start`              | Serve the production build locally                   |
-| `pnpm test`               | Vitest, full suite                                   |
-| `pnpm test --watch`       | Vitest in watch mode                                 |
-| `pnpm typecheck`          | `tsc --noEmit` over the whole project                |
-| `pnpm lint`               | ESLint with `--max-warnings=0`                       |
-| `pnpm privacy-audit`      | Build then scan `.next/` for forbidden tokens        |
+| Command              | Purpose                                       |
+| -------------------- | --------------------------------------------- |
+| `pnpm dev`           | Local dev server with HMR                     |
+| `pnpm build`         | Production build to `.next/`                  |
+| `pnpm start`         | Serve the production build locally            |
+| `pnpm test`          | Vitest, full suite                            |
+| `pnpm test --watch`  | Vitest in watch mode                          |
+| `pnpm typecheck`     | `tsc --noEmit` over the whole project         |
+| `pnpm lint`          | ESLint with `--max-warnings=0`                |
+| `pnpm privacy-audit` | Build then scan `.next/` for forbidden tokens |
 
 ## Pre-commit
 

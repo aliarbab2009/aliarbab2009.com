@@ -4,15 +4,15 @@ Targets enforced via Lighthouse + `next build`'s page-size report. Measured on a
 
 ## Targets
 
-| Metric                          | Target          | Why                                           |
-| ------------------------------- | --------------- | --------------------------------------------- |
-| Largest Contentful Paint (LCP)  | ≤ 2.0s          | First impression; brutalist text + grid only  |
-| First Input Delay (FID)         | ≤ 100ms         | Below human-perceivable input lag             |
-| Cumulative Layout Shift (CLS)   | ≤ 0.05          | No content jump after fonts load              |
-| Time to Interactive (TTI)       | ≤ 3.0s          | Site usable on a laptop tethered to phone     |
-| Initial JS bundle (per-route)   | ≤ 150 KB gzip   | Brutalist routes are mostly RSC               |
-| Initial CSS                     | ≤ 30 KB gzip    | Single Tailwind v4 stylesheet, tokens inline  |
-| First fonts paint               | ≤ 1.0s          | `next/font/google` self-hosts; preload first  |
+| Metric                         | Target        | Why                                          |
+| ------------------------------ | ------------- | -------------------------------------------- |
+| Largest Contentful Paint (LCP) | ≤ 2.0s        | First impression; brutalist text + grid only |
+| First Input Delay (FID)        | ≤ 100ms       | Below human-perceivable input lag            |
+| Cumulative Layout Shift (CLS)  | ≤ 0.05        | No content jump after fonts load             |
+| Time to Interactive (TTI)      | ≤ 3.0s        | Site usable on a laptop tethered to phone    |
+| Initial JS bundle (per-route)  | ≤ 150 KB gzip | Brutalist routes are mostly RSC              |
+| Initial CSS                    | ≤ 30 KB gzip  | Single Tailwind v4 stylesheet, tokens inline |
+| First fonts paint              | ≤ 1.0s        | `next/font/google` self-hosts; preload first |
 
 ## Budget enforcement
 
@@ -22,13 +22,13 @@ Targets enforced via Lighthouse + `next build`'s page-size report. Measured on a
 
 ## Things that would blow the budget
 
-| Don't                                                         | Instead                                                      |
-| ------------------------------------------------------------- | ------------------------------------------------------------ |
-| Add Framer Motion route transitions                           | Native CSS view transitions (ADR 0002)                       |
-| Add Radix UI for one dialog                                   | Native `<dialog>` (ADR 0001)                                 |
-| Add a date library (`date-fns`, `luxon`)                      | `Intl.DateTimeFormat` + pure helpers in `src/lib/time.ts`    |
-| Embed unoptimized hero images                                 | `next/image` with explicit `width`/`height` + `priority`     |
-| Load 4+ font families                                         | Two: Space Grotesk + JetBrains Mono (CLAUDE.md gotcha)       |
+| Don't                                    | Instead                                                   |
+| ---------------------------------------- | --------------------------------------------------------- |
+| Add Framer Motion route transitions      | Native CSS view transitions (ADR 0002)                    |
+| Add Radix UI for one dialog              | Native `<dialog>` (ADR 0001)                              |
+| Add a date library (`date-fns`, `luxon`) | `Intl.DateTimeFormat` + pure helpers in `src/lib/time.ts` |
+| Embed unoptimized hero images            | `next/image` with explicit `width`/`height` + `priority`  |
+| Load 4+ font families                    | Two: Space Grotesk + JetBrains Mono (CLAUDE.md gotcha)    |
 
 ## Measure locally
 

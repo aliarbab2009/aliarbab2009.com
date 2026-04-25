@@ -4,15 +4,15 @@ Lightweight STRIDE-flavored model for this static-with-API portfolio. Documents 
 
 ## Assets
 
-| Asset                                | Sensitivity | Where it lives                                       |
-| ------------------------------------ | ----------- | ---------------------------------------------------- |
-| Ali's name, GitHub handle, work      | Public      | Site bundle                                          |
-| AP exam dates                        | Public      | `src/config/milestones.ts`                           |
-| Resume content                       | Public      | `src/config/resume.ts` + future PDF                  |
-| Inbound contact-form messages        | Private     | Resend → `siteConfig.email`, never persisted on site |
-| Internal calendar (deadlines)        | Private     | `PRIVATE_CALENDAR.md` (gitignored)                   |
-| `RESEND_API_KEY`                     | Secret      | Vercel env var, never in repo                        |
-| Forbidden tokens (city/school/etc.)  | Private     | Must NEVER reach the deployed bundle                 |
+| Asset                               | Sensitivity | Where it lives                                       |
+| ----------------------------------- | ----------- | ---------------------------------------------------- |
+| Ali's name, GitHub handle, work     | Public      | Site bundle                                          |
+| AP exam dates                       | Public      | `src/config/milestones.ts`                           |
+| Resume content                      | Public      | `src/config/resume.ts` + future PDF                  |
+| Inbound contact-form messages       | Private     | Resend → `siteConfig.email`, never persisted on site |
+| Internal calendar (deadlines)       | Private     | `PRIVATE_CALENDAR.md` (gitignored)                   |
+| `RESEND_API_KEY`                    | Secret      | Vercel env var, never in repo                        |
+| Forbidden tokens (city/school/etc.) | Private     | Must NEVER reach the deployed bundle                 |
 
 ## Threats addressed
 
@@ -21,6 +21,7 @@ Lightweight STRIDE-flavored model for this static-with-API portfolio. Documents 
 **Risk:** an editor adds a city / school / college name to a config file or MDX body, builds, deploys, and the leak is permanent in caches.
 
 **Mitigation:**
+
 - `scripts/privacy-audit.mjs` scans the built output in CI
 - Per-config Vitest regex guards (school name patterns)
 - JSON-LD negative-space tests
@@ -37,6 +38,7 @@ Lightweight STRIDE-flavored model for this static-with-API portfolio. Documents 
 **Risk:** a malicious site posts to `/api/contact` from a logged-in browser.
 
 **Mitigation:**
+
 - Origin allowlist (rejects unknown origins with 403)
 - JSON Content-Type required (form-encoded → 415)
 - Honeypot field (silent 200 on bot fill)
@@ -47,6 +49,7 @@ Lightweight STRIDE-flavored model for this static-with-API portfolio. Documents 
 **Risk:** scripted spam fills the inbox.
 
 **Mitigation:**
+
 - Honeypot
 - Zod max-length cap (5000 chars)
 - Future: Upstash sliding window 3/hour, 20/day

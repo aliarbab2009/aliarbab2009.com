@@ -8,8 +8,8 @@ The site is a personal portfolio for a Class XII student (Ali Arbab,
 GitHub `@aliarbab2009`) who applies to college in late 2026. Two
 shapes the site could take:
 
-1. **College-targeted variant.** "Hi MIT admissions, here's why I'd
-   thrive on your campus…" — addressed to one institution.
+1. **College-targeted variant.** "Hi [Institution] admissions, here's
+   why I'd thrive on your campus…" — addressed to one institution.
 2. **College-agnostic variant.** "Hi — I'm Ali. Here's the long
    version of who I am and what I've built." — shareable with any
    admissions officer, any recruiter, any collaborator.
@@ -45,10 +45,10 @@ Privacy isn't a one-time review — it's a continuous CI gate.
 3. **Per-config school-name regex guards** — every typed content
    file (`activities.ts`, `awards.ts`, `timeline.ts`, `why-i-built.ts`,
    `resume.ts`) has a Vitest regex check for `(Capitalized )+(School|
-   Academy|Institute|College)\b` patterns in user-facing fields.
+Academy|Institute|College)\b` patterns in user-facing fields.
 4. **Geo-leak guard on `siteConfig`** — `shortDescription` and
    `longDescription` regex-checked against Indian metro names
-   (Delhi/Mumbai/Bengaluru/Chennai/Kolkata/Hyderabad).
+   (the regex list lives in `scripts/privacy-audit.mjs`).
 5. **AI-bot allowlist** — `robots.ts` deliberately does NOT block
    GPTBot/CCBot/anthropic-ai/Google-Extended. The portfolio is
    meant to be discoverable by every surface, including LLM search.

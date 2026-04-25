@@ -53,10 +53,10 @@ Files: `api/contact/route.test.ts`, `api/csp-report/route.test.ts`.
 
 ## Run
 
-| Command                | What it does                                    |
-| ---------------------- | ----------------------------------------------- |
-| `pnpm test`            | Runs the full Vitest suite once                 |
-| `pnpm test --watch`    | Watch mode                                      |
-| `pnpm typecheck`       | `tsc --noEmit` against the whole project        |
-| `pnpm privacy-audit`   | Build + scan for forbidden tokens               |
-| `pnpm lint`            | ESLint with `--max-warnings=0`                  |
+| Command              | What it does                             |
+| -------------------- | ---------------------------------------- |
+| `pnpm test`          | Runs the full Vitest suite once          |
+| `pnpm test --watch`  | Watch mode                               |
+| `pnpm typecheck`     | `tsc --noEmit` against the whole project |
+| `pnpm privacy-audit` | Build + scan for forbidden tokens        |
+| `pnpm lint`          | ESLint with `--max-warnings=0`           |

@@ -6,11 +6,11 @@ Authoritative list of strings that must NEVER appear in the deployed bundle. `sc
 
 These leak Ali's identity, location, or institution and can never be cached anywhere.
 
-- City names (Delhi, Mumbai, Bengaluru, Chennai, Kolkata, Hyderabad)
+- Specific city names (the regex list lives in `scripts/privacy-audit.mjs`)
 - School name (any specific school Ali attends or attended)
 - Phone numbers (any digit pattern matching common phone formats)
-- Raw personal Gmail (`foxman1544...@gmail.com`)
-- Specific college names (MIT, Harvard, Stanford, Princeton, Yale, Caltech, CMU, etc.)
+- Raw personal Gmail (the literal address pattern; site uses `siteConfig.email` instead)
+- Specific college names (any institution, regardless of country or tier)
 - "EA" / "early action" / "RA" / "regular action" / "ED" / "early decision" / "rolling admission"
 - "Admissions committee" (signals to a specific institution)
 
@@ -18,7 +18,7 @@ These leak Ali's identity, location, or institution and can never be cached anyw
 
 Things that reveal less but still narrow the audience.
 
-- Timezone strings (`IST`, `Asia/Kolkata`, `UTC+5:30`, etc.)
+- Timezone strings (any IANA zone or named offset that narrows location)
 - Specific country (only "Earth" / no country is the rule for the deployed surface)
 - Internal application deadline dates (Nov 2026, Jan 2027, etc.)
 
@@ -32,13 +32,13 @@ Stylistic / consistency.
 
 ## Where these get checked
 
-| Layer                          | What it scans                                                        |
-| ------------------------------ | -------------------------------------------------------------------- |
-| `scripts/privacy-audit.mjs`    | Final `.next/server`, `.next/static`, and `public/` bundle output    |
-| `src/lib/json-ld.test.ts`      | Every JSON-LD payload, recursively, for forbidden keys/values        |
-| Per-config Vitest tests        | The string contents of typed config arrays, regex by category        |
-| `src/config/site.test.ts`      | `siteConfig.shortDescription` + `longDescription` against geo names  |
-| `src/app/robots.test.ts`       | The robots policy itself + AI-bot allowlist invariant                |
+| Layer                       | What it scans                                                       |
+| --------------------------- | ------------------------------------------------------------------- |
+| `scripts/privacy-audit.mjs` | Final `.next/server`, `.next/static`, and `public/` bundle output   |
+| `src/lib/json-ld.test.ts`   | Every JSON-LD payload, recursively, for forbidden keys/values       |
+| Per-config Vitest tests     | The string contents of typed config arrays, regex by category       |
+| `src/config/site.test.ts`   | `siteConfig.shortDescription` + `longDescription` against geo names |
+| `src/app/robots.test.ts`    | The robots policy itself + AI-bot allowlist invariant               |
 
 ## Where these are allowed
 
