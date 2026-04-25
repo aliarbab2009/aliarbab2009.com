@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { ThemeScript } from "@/components/shell/theme-script";
@@ -9,16 +9,33 @@ import { cn } from "@/lib/utils";
 
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
+/**
+ * Self-hosted brutalist Latin stack. WOFF2 files in public/fonts/.
+ *   - Space Grotesk: 400 (body) + 500 (display headings)
+ *   - JetBrains Mono: 400 (mono labels, code)
+ *
+ * Self-hosting trades Google Fonts CDN for stable cross-build hashes
+ * and an offline-capable build. Per P4.09.
+ */
+const spaceGrotesk = localFont({
+  src: [
+    { path: "../../public/fonts/SpaceGrotesk-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../../public/fonts/SpaceGrotesk-Medium.woff2", weight: "500", style: "normal" },
+  ],
   variable: "--font-space-grotesk",
   display: "swap",
+  preload: true,
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+const jetbrainsMono = localFont({
+  src: [
+    { path: "../../public/fonts/JetBrainsMono-Regular.woff2", weight: "400", style: "normal" },
+  ],
   variable: "--font-jetbrains-mono",
   display: "swap",
+  preload: true,
+  fallback: ["ui-monospace", "SFMono-Regular", "Cascadia Code", "Menlo", "monospace"],
 });
 
 export const metadata: Metadata = {
