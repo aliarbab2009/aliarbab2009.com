@@ -21,6 +21,14 @@
     "preview": "next build && next start",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css,mjs}": [
+      "prettier --check"
+    ],
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --max-warnings=0"
+    ]
+  },
   "dependencies": {
     "@sentry/nextjs": "10.50.0",
     "class-variance-authority": "0.7.1",

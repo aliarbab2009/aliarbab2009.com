@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+# pre-commit gate — runs the same checks CI runs but scoped to staged
+# files where possible (lint-staged), so it's fast.
+#
+# Order is important:
+#   1. lint-staged: format-check + lint on the files about to be committed
+#   2. typecheck:   tsc --noEmit (whole project; type errors are global)
+#   3. test:        full vitest suite (fast — under 5s)
+#
+# Skip the hook with --no-verify only when you genuinely need to (e.g.
+# WIP commits on a feature branch). Never skip on main.
+
+set -e
+
+echo "[husky] lint-staged on changed files…"
+pnpm exec lint-staged
+
+echo "[husky] typecheck…"
+pnpm typecheck
+
+echo "[husky] test…"
+pnpm test
