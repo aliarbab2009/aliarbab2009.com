@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 /**
  * ThemeScript — inline blocking script that sets data-theme on <html>
  * BEFORE any CSS paints. Prevents FOUC when user's preferred theme
@@ -9,6 +11,12 @@
  *   3. default → dark
  *
  * Stringified + inlined so it runs synchronously. No network hop.
+ *
+ * Reads the per-request nonce from middleware (src/middleware.ts) so
+ * the strict CSP allows this inline <script> via 'nonce-...' source.
+ * Other inline scripts that Next.js injects (chunk loader, hydration
+ * data) get the same nonce stamped automatically when middleware
+ * sets x-nonce on the request.
  */
 const INLINE_SCRIPT = `
 (() => {
@@ -26,6 +34,7 @@ const INLINE_SCRIPT = `
 })();
 `;
 
-export function ThemeScript() {
-  return <script dangerouslySetInnerHTML={{ __html: INLINE_SCRIPT }} />;
+export async function ThemeScript() {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  return <script nonce={nonce} dangerouslySetInnerHTML={{ __html: INLINE_SCRIPT }} />;
 }
