@@ -165,7 +165,14 @@ export default function AboutPage() {
                     {m?.subLabel ?? ""}
                   </span>
                   <span className="col-span-6 text-right sm:col-span-3">
-                    {m ? (
+                    {m?.score ? (
+                      <span className="inline-flex items-baseline gap-1.5 font-mono text-sm font-medium text-[var(--color-primary)]">
+                        <span className="text-[10px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
+                          Score
+                        </span>
+                        {m.score}
+                      </span>
+                    ) : m ? (
                       <LiveCountdown iso={m.at} className="text-sm text-[var(--color-primary)]" />
                     ) : (
                       <span className="font-mono text-[11px] text-[var(--color-muted)]">
