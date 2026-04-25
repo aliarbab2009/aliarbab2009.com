@@ -24,6 +24,12 @@ export type Project = {
   primaryColor: string;
   year: number;
   stack: readonly string[];
+  /**
+   * ISO date — last meaningful update to this project page or its case
+   * study. Sitemap uses it for lastModified. Optional; falls back to
+   * siteConfig.lastReviewedISO when absent.
+   */
+  lastUpdatedISO?: string;
 };
 
 export const PROJECTS: readonly Project[] = [
@@ -40,6 +46,7 @@ export const PROJECTS: readonly Project[] = [
     repoUrl: "https://github.com/aliarbab2009/StockSaathi",
     primaryColor: "#00B386",
     year: 2025,
+    lastUpdatedISO: "2026-04-25",
     stack: ["Vanilla JS", "Python", "Vercel", "Supabase", "Groq LLM", "Yahoo Finance"],
   },
   {
@@ -54,6 +61,7 @@ export const PROJECTS: readonly Project[] = [
     repoUrl: "https://github.com/aliarbab2009/BolHisaab",
     primaryColor: "#4F46E5",
     year: 2025,
+    lastUpdatedISO: "2026-04-25",
     stack: ["Next.js 16", "React 19", "TypeScript", "Supabase", "Groq Whisper", "Tailwind v4"],
   },
   {
@@ -68,6 +76,7 @@ export const PROJECTS: readonly Project[] = [
     repoUrl: "https://github.com/aliarbab2009/MagLock-Protocol",
     primaryColor: "#00FF9D",
     year: 2025,
+    lastUpdatedISO: "2026-04-25",
     stack: ["Flutter", "Dart", "ESP32", "Arduino C++", "Grok API", "WebView"],
   },
 ] as const;
