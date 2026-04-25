@@ -197,6 +197,96 @@ export default function AboutPage() {
 
       {/* § 06 — WHY I BUILT (per-project motivation essays) */}
       <WhyIBuiltSection />
+
+      {/* § 07 — CLOSE (signoff + colophon + last-reviewed stamp) */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 07
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Close
+          </p>
+        </div>
+        <div className="col-span-12 md:col-span-10">
+          <h2
+            className="mb-8 text-[clamp(2rem,4vw,3.5rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            That&apos;s the long version.
+          </h2>
+          <div className="max-w-2xl space-y-5 text-lg leading-relaxed text-[var(--color-fg)]/85">
+            <p>
+              Three projects, four AP exams, one site. If you&apos;ve scrolled this far, thank you
+              &mdash; that&apos;s a meaningful slice of attention and I don&apos;t take it for
+              granted.
+            </p>
+            <p>
+              A note on this site itself: built in Next.js 15 + Tailwind v4 + TypeScript strict,
+              deployed to Vercel. The brutalist Swiss-grid is deliberate &mdash; everything
+              reduces to type and hairline borders so the work in the project pages can shout.
+              Source is open at{" "}
+              <a
+                href={siteConfig.github}
+                target="_blank"
+                rel="noreferrer"
+                className="underline decoration-2 underline-offset-4 hover:text-[var(--color-primary)]"
+              >
+                github.com/{siteConfig.githubHandle}
+              </a>{" "}
+              if you want to see how it&apos;s put together.
+            </p>
+            <p>
+              If anything here matches something you&apos;re building or weighing, the shortest
+              path is{" "}
+              <Link
+                href="/contact"
+                className="underline decoration-2 underline-offset-4 hover:text-[var(--color-primary)]"
+              >
+                /contact
+              </Link>
+              .
+            </p>
+          </div>
+
+          <div className="mt-12 flex flex-wrap gap-3">
+            <Link
+              href="/projects"
+              className="group inline-flex items-center gap-3 border-2 border-[var(--color-border)] bg-[var(--color-primary)] px-5 py-3 font-mono text-xs tracking-[0.2em] text-[var(--color-primary-fg)] uppercase transition-transform hover:-translate-y-0.5"
+            >
+              Browse all projects
+              <span className="transition-transform group-hover:translate-x-1" aria-hidden>
+                &rarr;
+              </span>
+            </Link>
+            <Link
+              href="/resume"
+              className="inline-flex items-center gap-3 border-2 border-[var(--color-border)] bg-transparent px-5 py-3 font-mono text-xs tracking-[0.2em] uppercase transition-colors hover:bg-[var(--color-border)] hover:text-[var(--color-bg)]"
+            >
+              Resume
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-3 border-2 border-[var(--color-border)] bg-transparent px-5 py-3 font-mono text-xs tracking-[0.2em] uppercase transition-colors hover:bg-[var(--color-border)] hover:text-[var(--color-bg)]"
+            >
+              Contact
+            </Link>
+          </div>
+
+          <div className="mt-12 flex flex-wrap items-baseline justify-between gap-3 border-t-2 border-[var(--color-border)] pt-4">
+            <p
+              className="text-2xl tracking-tight"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              &mdash; Ali
+            </p>
+            <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
+              Last reviewed{" "}
+              <time dateTime={siteConfig.lastReviewedISO}>{siteConfig.lastReviewedISO}</time>
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
