@@ -26,9 +26,8 @@ export default function ErrorBoundary({
   useEffect(() => {
     // P4.16 will wire Sentry.captureException here.
     // For now, surface the digest in console so dev workflows + Vercel
-    // logs can correlate.
+    // logs can correlate. console.error is allowed by the eslint config.
     if (process.env.NODE_ENV !== "production") {
-      // eslint-disable-next-line no-console
       console.error("[error.tsx]", error);
     }
   }, [error]);
