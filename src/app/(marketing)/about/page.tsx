@@ -82,11 +82,48 @@ export default function AboutPage() {
           >
             Hi &mdash; I&apos;m Ali.
           </h1>
-          <p className="mt-8 max-w-2xl text-xl leading-relaxed text-[var(--color-fg)]/85">
-            I&apos;m a Class XII student. This page is the long version of who I am and what
-            I&apos;ve built. Whoever you are &mdash; admissions officer, recruiter, collaborator,
-            curious reader &mdash; thanks for spending a few minutes here.
-          </p>
+          <div className="mt-8 max-w-2xl space-y-5 text-lg leading-relaxed text-[var(--color-fg)]/85">
+            <p>
+              I&apos;m a Class XII student finishing high school in 2026, sitting four AP exams in
+              May, and shipping software in the meantime. This page is the long version: the
+              journey, the projects, and the reasoning behind both.
+            </p>
+            <p>
+              Three years ago I&apos;d never heard of an ESP32, didn&apos;t know that Next.js
+              wasn&apos;t a typo, and thought a stock simulator was a glorified calculator. Today
+              there&apos;s an investment coach for teenagers running at{" "}
+              <a
+                href="https://stocksaathi.co.in"
+                target="_blank"
+                rel="noreferrer"
+                className="underline decoration-2 underline-offset-4 hover:text-[var(--color-primary)]"
+              >
+                stocksaathi.co.in
+              </a>
+              , a voice-first ledger for shopkeepers in pre-launch at bolhisaab.in, and a dual-door
+              smart lock built on two ESP32 boards sitting on my desk that I can unlock from my
+              phone over the local network.
+            </p>
+            <p>
+              The through-line is people, not tech. Indian teenagers who don&apos;t have a safe
+              place to learn how markets actually behave. Hindi-first shopkeepers who
+              shouldn&apos;t have to translate &ldquo;Ram took 500 rupees on credit&rdquo; into
+              English to keep their books. A house that locks itself when the family forgets,
+              without sending door state to a server in a different country.
+            </p>
+            <p>
+              Whoever you are &mdash; admissions officer, recruiter, collaborator, curious reader
+              &mdash; thanks for spending a few minutes here. If anything below sparks a question,
+              there&apos;s a contact form at{" "}
+              <Link
+                href="/contact"
+                className="underline decoration-2 underline-offset-4 hover:text-[var(--color-primary)]"
+              >
+                /contact
+              </Link>
+              .
+            </p>
+          </div>
         </div>
       </section>
 
