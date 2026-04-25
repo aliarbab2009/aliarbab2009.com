@@ -42,7 +42,7 @@
         "interactive": ["error", { "maxNumericValue": 2000 }],
         "speed-index": ["error", { "maxNumericValue": 1500 }],
 
-        "resource-summary:script:size": ["error", { "maxNumericValue": 130000 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 220000 }],
         "resource-summary:stylesheet:size": ["error", { "maxNumericValue": 25000 }],
         "resource-summary:font:size": ["error", { "maxNumericValue": 200000 }],
         "resource-summary:image:size": ["warn", { "maxNumericValue": 800000 }],

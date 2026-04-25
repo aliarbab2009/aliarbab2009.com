@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 /**
@@ -72,6 +73,10 @@ const securityHeaders = [
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Hide source maps from public clients. Sentry has them via the
+  // build-time upload (configured in withSentryConfig below) so it
+  // can resolve minified stack traces server-side; visitors don't.
+  productionBrowserSourceMaps: false,
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
@@ -81,6 +86,12 @@ const config: NextConfig = {
     ],
   },
   typedRoutes: true,
+  // Expose Vercel build env to client bundle so sentry.client.config.ts
+  // can tag events with the right environment + release SHA.
+  env: {
+    NEXT_PUBLIC_VERCEL_ENV: process.env.VERCEL_ENV,
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA,
+  },
   async headers() {
     return [
       {
@@ -102,4 +113,25 @@ const config: NextConfig = {
   },
 };
 
-export default config;
+/**
+ * withSentryConfig wraps the Next config to inject the @sentry/webpack-plugin
+ * during build. It uploads source maps to Sentry tagged with the git SHA,
+ * then strips them from the public output (hideSourceMaps: true).
+ *
+ * silent: !process.env.CI keeps local builds quiet; Vercel builds run with
+ * CI=true so the upload logs there. authToken is only set on Vercel (via
+ * SENTRY_AUTH_TOKEN env var); without it, the plugin no-ops gracefully.
+ */
+const sentryConfig = {
+  org: process.env.SENTRY_ORG ?? "ali-arbab",
+  project: process.env.SENTRY_PROJECT ?? "aliarbab2009-com",
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  hideSourceMaps: true,
+  disableLogger: true,
+  tunnelRoute: "/api/monitoring",
+  automaticVercelMonitors: false,
+};
+
+export default withSentryConfig(config, sentryConfig);

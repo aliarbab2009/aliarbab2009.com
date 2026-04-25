@@ -63,3 +63,8 @@ test-results/
 
 # TypeScript
 *.tsbuildinfo
+
+# Sentry
+.sentryclirc
+.env.sentry-build-plugin
+sentry.properties

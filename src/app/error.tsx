@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 import { useEffect } from "react";
 
@@ -24,9 +25,7 @@ export default function ErrorBoundary({
   reset: () => void;
 }) {
   useEffect(() => {
-    // P4.16 will wire Sentry.captureException here.
-    // For now, surface the digest in console so dev workflows + Vercel
-    // logs can correlate. console.error is allowed by the eslint config.
+    Sentry.captureException(error);
     if (process.env.NODE_ENV !== "production") {
       console.error("[error.tsx]", error);
     }
