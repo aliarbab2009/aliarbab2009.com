@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { NowBar } from "@/components/home/now-bar";
 import { PROJECTS } from "@/config/projects";
 import { siteConfig } from "@/config/site";
 import { buildMetadata } from "@/lib/seo";
@@ -23,7 +24,7 @@ export default function HomePage() {
       {/* ============================================================
           MASTHEAD
           ============================================================ */}
-      <header className="mb-16 grid grid-cols-12 gap-4 border-b-2 border-[var(--color-border)] pb-6">
+      <header className="mb-3 grid grid-cols-12 gap-4 border-b-2 border-[var(--color-border)] pb-6">
         <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             Author
@@ -51,6 +52,11 @@ export default function HomePage() {
           </p>
         </div>
       </header>
+
+      {/* ============================================================
+          NOW BAR — momentum strip (school year + next AP countdown)
+          ============================================================ */}
+      <NowBar />
 
       {/* ============================================================
           § 01 — INTRO (monogram + headline + intro)
