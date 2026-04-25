@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CommandPaletteTrigger } from "@/components/shell/command-palette-trigger";
 import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ export function Nav() {
               </li>
             ))}
           </ul>
+          <CommandPaletteTrigger />
           <ThemeToggle />
         </div>
       </nav>
