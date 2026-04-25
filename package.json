@@ -18,7 +18,8 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css}\" \"scripts/**/*.{mjs,js}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css}\" \"scripts/**/*.{mjs,js}\"",
     "privacy-audit": "node scripts/privacy-audit.mjs",
-    "preview": "next build && next start"
+    "preview": "next build && next start",
+    "prepare": "husky"
   },
   "dependencies": {
     "@sentry/nextjs": "10.50.0",
@@ -40,6 +41,8 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.3.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.4.0",
     "postcss": "^8.4.49",
     "prettier": "^3.4.0",
     "prettier-plugin-tailwindcss": "^0.6.9",
