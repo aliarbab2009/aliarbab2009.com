@@ -13,6 +13,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "privacy-audit": "node scripts/privacy-audit.mjs",
     "preview": "next build && next start"
   },
@@ -40,6 +42,7 @@
     "prettier": "^3.4.0",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "4.1.5"
   }
 }
