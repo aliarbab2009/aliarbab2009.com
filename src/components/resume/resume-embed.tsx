@@ -149,13 +149,20 @@ export function ResumeEmbed() {
               className="flex items-baseline justify-between gap-3 border-l-2 border-[var(--color-border)] pl-3"
             >
               <span className="text-sm font-medium">{m.label}</span>
-              <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
-                {new Date(m.at).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                  timeZone: "UTC",
-                })}
+              <span className="flex items-baseline gap-2">
+                <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
+                  {new Date(m.at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </span>
+                {m.score ? (
+                  <span className="resume-pill border border-[var(--color-primary)] px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-[var(--color-primary)]">
+                    Score {m.score}
+                  </span>
+                ) : null}
               </span>
             </li>
           ))}
