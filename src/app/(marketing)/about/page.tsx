@@ -4,6 +4,8 @@ import Link from "next/link";
 import { MILESTONES } from "@/config/milestones";
 import { siteConfig } from "@/config/site";
 import { LiveCountdown } from "@/components/shell/live-countdown";
+import { JsonLd } from "@/components/seo/json-ld";
+import { aboutPageJsonLd } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -27,6 +29,7 @@ export default function AboutPage() {
 
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-6 pt-16 pb-16 sm:pt-20">
+      <JsonLd data={aboutPageJsonLd()} />
       <div className="brutalist-grid" aria-hidden />
 
       {/* MASTHEAD */}
