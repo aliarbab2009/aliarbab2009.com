@@ -11,21 +11,26 @@ import { siteConfig } from "@/config/site";
 
 describe("robots()", () => {
   const r = robots();
+  // Normalize rules to a non-empty array so every test can index without
+  // re-asserting on each call. Guards against the schema changing to
+  // single-rule shape in a future Next bump.
+  const rules = Array.isArray(r.rules) ? r.rules : [r.rules];
+  const firstRule = rules[0];
+  if (!firstRule) throw new Error("robots() emitted no rules — fixture invariant broken");
 
   it("exposes a single rule (the catch-all '*')", () => {
-    const rules = Array.isArray(r.rules) ? r.rules : [r.rules];
     expect(rules).toHaveLength(1);
   });
 
   it("allows '/' for the catch-all user-agent", () => {
-    const rule = Array.isArray(r.rules) ? r.rules[0] : r.rules;
-    expect(rule.userAgent).toBe("*");
-    expect(rule.allow).toBe("/");
+    expect(firstRule.userAgent).toBe("*");
+    expect(firstRule.allow).toBe("/");
   });
 
   it("disallows non-content paths (api / dev / _next / private)", () => {
-    const rule = Array.isArray(r.rules) ? r.rules[0] : r.rules;
-    const disallow = Array.isArray(rule.disallow) ? rule.disallow : [rule.disallow];
+    const disallow = Array.isArray(firstRule.disallow)
+      ? firstRule.disallow
+      : [firstRule.disallow];
     expect(disallow).toContain("/api/");
     expect(disallow).toContain("/dev/");
     expect(disallow).toContain("/_next/");
@@ -33,8 +38,9 @@ describe("robots()", () => {
   });
 
   it("does NOT disallow '/' (catastrophic de-listing protection)", () => {
-    const rule = Array.isArray(r.rules) ? r.rules[0] : r.rules;
-    const disallow = Array.isArray(rule.disallow) ? rule.disallow : [rule.disallow];
+    const disallow = Array.isArray(firstRule.disallow)
+      ? firstRule.disallow
+      : [firstRule.disallow];
     expect(disallow).not.toContain("/");
   });
 
