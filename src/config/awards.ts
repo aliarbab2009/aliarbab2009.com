@@ -1,9 +1,10 @@
 /**
  * Awards & recognition — surfaced in /about § Awards.
  *
- * Privacy hard-rule: avoid awards whose name identifies the school
- * (e.g. "Modern School Math Prize" → identifies the institution).
- * Generic / regional / national / international awards are fine.
+ * Privacy hard-rule: avoid awards whose name identifies the
+ * institution Ali attended (any prize whose title contains that
+ * institution's name is disqualifying). Generic / regional / national
+ * / international awards are fine.
  *
  * Each award gets a stable id, a year, an issuing org (kept generic
  * when possible), an optional `pending: true` flag for awards
@@ -46,7 +47,7 @@ export const AWARDS: readonly Award[] = [
   //   - Scholarship / fellowship / grant names that don't identify the school
   //
   // AVOID:
-  //   - "<School name> Scholar of the Year" — identifies institution
+  //   - "[institution-named] Scholar of the Year" — identifies institution
   //   - Class rank phrasing tied to a specific cohort
   //
   // Example shape (commented out — uncomment + edit when ready):
