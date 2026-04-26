@@ -173,28 +173,66 @@ export default function MagLockPage() {
         </div>
       </section>
 
-      {/* § 05 — CASE STUDY (Phase 2 prose lands May 16+) */}
+      {/* § 05 — ARCHITECTURE */}
       <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 05
           </p>
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Case
+            Architecture
           </p>
         </div>
-        <div className="col-span-12 md:col-span-10">
-          <div className="border-2 border-dashed border-[var(--color-border)] p-10 text-center">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-              Full case study — coming soon
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)]">
-              Architecture diagrams of the Flutter → ESP32 REST loop + the ESP32-CAM MJPEG pipeline,
-              a gallery of 27 real camera snapshots, two demo videos of the dual-relay unlock +
-              Maggy voice interaction, and a write-up of the hardcoded-WiFi-creds security incident
-              ship in Phase 2.
-            </p>
-          </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Three independent components on one closed network.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">ESP32 lock controller</strong> — station-mode WiFi with
+            a fixed IP (<code className="font-mono text-sm">192.168.4.100</code>), holding two
+            relays and serving a tiny synchronous HTTP API on port 80. Routes:{" "}
+            <code className="font-mono text-sm">GET /status</code>,{" "}
+            <code className="font-mono text-sm">{`POST /lock?relay={1|2|all}`}</code>,{" "}
+            <code className="font-mono text-sm">{`POST /unlock?relay={1|2|all}`}</code>,{" "}
+            <code className="font-mono text-sm">POST /timer</code> (JSON body{" "}
+            <code className="font-mono text-sm">{`{"seconds":N}`}</code>). Auto-lock duration
+            persists in NVS under the namespace{" "}
+            <code className="font-mono text-sm">&quot;nexus&quot;</code>. Door state is
+            intentionally NOT persisted — a brown-out reboot mid-unlock comes back with both relays
+            driven LOW (locked) before the radio is even started.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">ESP32-CAM (AI-Thinker)</strong> — a separate fixed-IP
+            device (<code className="font-mono text-sm">192.168.4.101</code>) running its own HTTP
+            server. <code className="font-mono text-sm">GET /stream</code> returns a{" "}
+            <code className="font-mono text-sm">multipart/x-mixed-replace; boundary=frame</code>{" "}
+            MJPEG at SVGA 800×600 ~25fps; <code className="font-mono text-sm">GET /capture</code>{" "}
+            returns a single QXGA 2048×1536 JPEG at quality 1. Streaming runs in a FreeRTOS task
+            pinned to core 1 (8KB stack), leaving core 0 free for the WebServer + WiFi stack.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Flutter app</strong> — a single{" "}
+            <code className="font-mono text-sm">LockProvider</code> (ChangeNotifier, ~280 lines) is
+            the only orchestrator. Two services hang off it:{" "}
+            <code className="font-mono text-sm">Esp32Service</code> (HTTP control plane, returns{" "}
+            <code className="font-mono text-sm">{`ServiceResult<T>`}</code> instead of throwing) and{" "}
+            <code className="font-mono text-sm">StorageService</code> (a thin{" "}
+            <code className="font-mono text-sm">shared_preferences</code> wrapper). The MJPEG
+            consumer lives directly in <code className="font-mono text-sm">CameraFeedWidget</code>,
+            parsing JPEG SOI/EOI markers out of the raw byte stream.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Transport.</strong> Plain HTTP. No TLS. No WebSocket. No
+            MQTT. No bearer token, HMAC, or pre-shared key. CORS is permissive (
+            <code className="font-mono text-sm">*</code>). This is a deliberate scope choice: the
+            trust boundary is the AP itself — the device pair lives on a SoftAP-style subnet
+            that&apos;s not bridged to the home WiFi or the internet, and the only client expected
+            to talk to it is a phone the owner has paired by typing the IP into a settings screen.
+            Adding HMAC-signed POSTs with a shared secret in NVS is the natural v2 step.
+          </p>
         </div>
       </section>
     </div>
