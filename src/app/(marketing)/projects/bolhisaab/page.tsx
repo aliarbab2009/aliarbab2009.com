@@ -390,7 +390,7 @@ RULES:
       </section>
 
       {/* § 08 — LEDGER */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 08
@@ -452,6 +452,72 @@ $$;`}
             semantics are domain-named: <code className="font-mono text-sm">--credit</code>{" "}
             (emerald) and <code className="font-mono text-sm">--debit</code> (rose) live as design
             tokens, not generic UI sugar — the design vocabulary mirrors the ledger vocabulary.
+          </p>
+        </div>
+      </section>
+
+      {/* § 09 — POLISH */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 09
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Polish
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <ul className="grid grid-cols-1 gap-0 border-2 border-[var(--color-border)] md:grid-cols-2">
+            {[
+              [
+                "Domain-named CSS tokens",
+                "--credit and --debit are first-class design tokens, not utility classes. The Badge primitive has dedicated credit/debit variants. Naming the token after the meaning, not the color, lets a future redesign rebalance one without breaking the other.",
+              ],
+              [
+                "iOS focus-zoom defeated",
+                "Every <input> uses text-base (16px) so Safari doesn't auto-zoom on focus. Mobile-first hygiene most projects skip.",
+              ],
+              [
+                "Hand-rolled bottom sheet (no Radix)",
+                "~50 lines on top of Framer Motion's motion.div + AnimatePresence, with backdrop click-to-close, body scroll lock, ESC handler, and pb-[env(safe-area-inset-bottom)] for the iOS home-indicator. The comment in the file: 'No Radix; self-contained overlay + slide panel.'",
+              ],
+              [
+                "Translator defeat",
+                "Chrome's auto-translate sees Hinglish and tries to 'fix' it client-side, breaking React hydration on every nav. Triple-belt fix: <html lang='hi' translate='no'>, notranslate class, metadata.other.google = 'notranslate', plus suppressHydrationWarning. Hard-earned bug, specific to Indic-language products.",
+              ],
+              [
+                "Online/offline as useSyncExternalStore",
+                "OfflineBanner uses the React 18 textbook pattern with custom subscribe/getSnapshot/getServerSnapshot. SSR-safe, no flash-of-banner-on-hydrate.",
+              ],
+              [
+                "PrewarmVoice route compilation",
+                "A 12-line client component fires a useless POST to /api/voice on mount so Turbopack compiles the heavy route before the user records anything. Empty FormData hits the 400 early-return but still forces full-route compilation.",
+              ],
+            ].map(([title, body], i, arr) => (
+              <li
+                key={title}
+                className={
+                  "p-6 " +
+                  (i < arr.length - 1 ? "border-b-2 border-[var(--color-border)]" : "") +
+                  (i % 2 === 0 ? "md:border-r-2 md:border-[var(--color-border)]" : "") +
+                  (i < arr.length - 2
+                    ? "md:border-b-2 md:border-[var(--color-border)]"
+                    : "md:border-b-0")
+                }
+              >
+                <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--color-primary)] uppercase">
+                  {title}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-fg)]">{body}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="max-w-prose text-sm leading-relaxed text-[var(--color-muted)]">
+            A non-trivial slice of the engineering went into 27 documented gotchas — bugs already
+            debugged so a future contributor doesn&apos;t rediscover them. Examples: Llama 8B&apos;s
+            tendency to drop keys instead of returning <code className="font-mono">null</code>;
+            MediaRecorder MIME rejection by Sarvam&apos;s validator; Whisper&apos;s noisy-input
+            self-repeat; Chrome speech-recognition&apos;s auto-end race with user-stop.
           </p>
         </div>
       </section>
