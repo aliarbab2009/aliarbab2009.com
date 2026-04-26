@@ -198,31 +198,34 @@ export default function BolHisaabPage() {
       </section>
 
       {/* § 05 — ARCHITECTURE */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 pt-10">
         <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 05
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Architecture
-          </p>
+          <div data-bh-section-header>
+            <span data-bh-section-badge>05</span>
+            <span data-bh-section-label>Architecture</span>
+          </div>
         </div>
         <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            data-bh-section-heading
+            className="text-[clamp(1.75rem,3vw,2.75rem)]"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Four sequential calls collapsed into one. ~500–800ms saved.
+            Four sequential calls collapsed into one.{" "}
+            <span data-bh-credit-text>~500–800ms saved.</span>
           </h2>
           <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
             The hot path is a single endpoint,{" "}
             <code className="font-mono text-sm">POST /api/voice</code>. It collapses what used to be
             four sequential calls (
             <code className="font-mono text-sm">/transcribe → /parse → handleIntent → commit</code>)
-            into one round trip — saving ~500–800ms end-to-end. The route accepts either a
-            pre-computed transcript (from the browser&apos;s Web Speech API) or an audio blob (from
-            MediaRecorder), then runs STT → Llama parse → party resolution → confidence-gated
-            auto-commit in a single Vercel function.
+            into one round trip — saving{" "}
+            <span data-bh-credit-text className="font-medium">
+              ~500–800ms
+            </span>{" "}
+            end-to-end. The route accepts either a pre-computed transcript (from the browser&apos;s
+            Web Speech API) or an audio blob (from MediaRecorder), then runs STT → Llama parse →
+            party resolution → confidence-gated auto-commit in a single Vercel function.
           </p>
           <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
             Speech-to-text is a three-tier auto-select decided at mount time:{" "}
