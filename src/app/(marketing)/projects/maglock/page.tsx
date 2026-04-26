@@ -475,18 +475,18 @@ export default function MagLockPage() {
       <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 06 — LOCK FIRMWARE */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div data-maglock-section-header className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 06
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Lock fw
-          </p>
+      <section className="mb-20 grid grid-cols-12 gap-4">
+        <div data-maglock-section-label className="col-span-12 md:col-span-2">
+          <span>§ 06</span>
+          <span>Lock fw</span>
         </div>
-        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+        <div
+          data-maglock-brackets
+          className="col-span-12 flex flex-col gap-6 border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] p-8 md:col-span-10"
+        >
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            data-maglock-hud-heading
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium text-[var(--color-primary)]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             246 lines. One sketch. Locks before WiFi.
@@ -504,8 +504,9 @@ export default function MagLockPage() {
             without touching call sites:
           </p>
           <pre
+            data-maglock-brackets
             data-maglock-code-block
-            className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
+            className="overflow-x-auto border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
           >
             {`#define RELAY1_PIN       26     // Door 1 magnetic lock
 #define RELAY2_PIN       27     // Door 2 magnetic lock
@@ -525,7 +526,7 @@ export default function MagLockPage() {
           <pre
             data-maglock-brackets
             data-maglock-code-block
-            className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
+            className="overflow-x-auto border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
           >
             {`void setup() {
   Serial.begin(115200);
@@ -560,7 +561,7 @@ export default function MagLockPage() {
         </div>
       </section>
 
-      <div data-maglock-double-rule className="my-6"></div>
+      <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 07 — CAMERA FIRMWARE */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
