@@ -582,22 +582,28 @@ export default function MagLockPage() {
           </h2>
 
       {/* § 08 — FLUTTER APP */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div data-maglock-section-header className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 08
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Flutter
-          </p>
+      <section className="mb-20 grid grid-cols-12 gap-4">
+        <div data-maglock-section-label className="col-span-12 md:col-span-2">
+          <span>§ 08</span>
+          <span>Flutter</span>
         </div>
-        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+        <div
+          data-maglock-brackets
+          className="col-span-12 flex flex-col gap-6 border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] p-8 md:col-span-10"
+        >
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            data-maglock-hud-heading
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium text-[var(--color-primary)]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             MJPEG decoder, by hand. Optimistic UI. 800ms cooldown.
           </h2>
+
+          {/* The interactive Door Control Panel was hoisted above the fold
+              into § 01. § 08 now leads with the MJPEG decoder writeup that
+              was always its real subject — the static mockup that used to
+              live here was visually duplicating the interactive demo. */}
+
           <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
             <strong className="font-medium">MJPEG decoder, by hand.</strong>{" "}
             <code className="font-mono text-sm">CameraFeedWidget</code> opens the stream as{" "}
@@ -619,7 +625,7 @@ export default function MagLockPage() {
           <pre
             data-maglock-brackets
             data-maglock-code-block
-            className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
+            className="overflow-x-auto border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
           >
             {`List<int> buf = [];
 _streamSub = res.stream.listen((chunk) {
@@ -674,7 +680,7 @@ _streamSub = res.stream.listen((chunk) {
         </div>
       </section>
 
-      <div data-maglock-double-rule className="my-6"></div>
+      <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 09 — MAGGY VOICE ASSISTANT */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
