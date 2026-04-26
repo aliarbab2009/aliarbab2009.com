@@ -47,7 +47,8 @@ export default function StockSaathiPage() {
             Status
           </p>
           <p className="font-mono text-sm font-medium text-[var(--color-primary)]">
-            ● {project.statusLabel}
+            <span data-ss-pulse-dot className="mr-2 inline-block align-middle"></span>
+            {project.statusLabel}
           </p>
         </div>
         <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
@@ -493,6 +494,7 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
             ].map(([title, body], i, arr) => (
               <li
                 key={title}
+                data-ss-card-hover
                 className={
                   "p-6 " +
                   (i < arr.length - 1 ? "border-b-2 border-[var(--color-border)]" : "") +
@@ -591,6 +593,7 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
             ].map(([num, label], i) => (
               <li
                 key={label}
+                data-ss-stat-tile
                 className={
                   "border-[var(--color-border)] p-5 " +
                   (i % 2 === 0 ? "border-r-2" : "") +
@@ -599,7 +602,10 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
                   (i < 8 ? "md:border-b-2" : "")
                 }
               >
-                <p className="font-mono text-2xl font-medium text-[var(--color-primary)] tabular-nums">
+                <p
+                  data-ss-stat-number
+                  className="font-mono text-2xl font-medium text-[var(--color-primary)] tabular-nums"
+                >
                   {num}
                 </p>
                 <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
