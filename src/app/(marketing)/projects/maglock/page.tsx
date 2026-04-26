@@ -174,7 +174,7 @@ export default function MagLockPage() {
       </section>
 
       {/* § 05 — ARCHITECTURE */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 05
@@ -232,6 +232,85 @@ export default function MagLockPage() {
             that&apos;s not bridged to the home WiFi or the internet, and the only client expected
             to talk to it is a phone the owner has paired by typing the IP into a settings screen.
             Adding HMAC-signed POSTs with a shared secret in NVS is the natural v2 step.
+          </p>
+        </div>
+      </section>
+
+      {/* § 06 — LOCK FIRMWARE */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 06
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Lock fw
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            246 lines. One sketch. Locks before WiFi.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            A single Arduino sketch — no PlatformIO, no separate translation units. Pin defines,
+            route handlers, state machine, <code className="font-mono text-sm">setup()</code>,{" "}
+            <code className="font-mono text-sm">loop()</code> all in one file. Anyone with the
+            Arduino IDE and the ESP32 board package can flash it.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Polarity-agnostic relay control.</strong> A single{" "}
+            <code className="font-mono text-sm">#define</code> retargets the firmware between
+            active-low opto-isolated relay boards (the typical case) and active-high MOSFET drivers,
+            without touching call sites:
+          </p>
+          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+            {`#define RELAY1_PIN       26     // Door 1 magnetic lock
+#define RELAY2_PIN       27     // Door 2 magnetic lock
+#define STATUS_LED_PIN    2     // Onboard blue LED
+#define RELAY_ACTIVE_HIGH false // Active-LOW relay modules
+
+#define RELAY_ON  (RELAY_ACTIVE_HIGH ? HIGH : LOW)
+#define RELAY_OFF (RELAY_ACTIVE_HIGH ? LOW  : HIGH)`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Boot ordering — fail-secure by construction.</strong>{" "}
+            The most important detail in the firmware: both relays are commanded LOCK before the
+            radio is started. A brown-out reboot mid-unlock can never come back with a door open.
+            Door state is deliberately NOT persisted to NVS — the device always boots with both
+            doors locked.
+          </p>
+          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+            {`void setup() {
+  Serial.begin(115200);
+  pinMode(RELAY1_PIN, OUTPUT);
+  pinMode(RELAY2_PIN, OUTPUT);
+  pinMode(STATUS_LED_PIN, OUTPUT);
+  relayLock(RELAY1_PIN);   // <-- doors locked before WiFi exists
+  relayLock(RELAY2_PIN);
+
+  prefs.begin("nexus", true);
+  autoLockSeconds = prefs.getInt("timer", 10);
+  prefs.end();
+  // ...WiFi.begin() comes only after this...
+}`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Cooperative loop.</strong> No{" "}
+            <code className="font-mono text-sm">xTaskCreate</code>, no semaphores, no FreeRTOS
+            tasks. Three concurrent jobs share <code className="font-mono text-sm">loop()</code> via
+            the <code className="font-mono text-sm">millis() - last &gt;= interval</code> idiom:
+            HTTP request handling, auto-lock countdown, and a 15-second WiFi watchdog. The only{" "}
+            <code className="font-mono text-sm">delay()</code> in steady state is a 500ms gap
+            between staggered dual-relay unlock pulses (intentional inrush mitigation).
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            All timing uses unsigned-arithmetic-wraparound-safe comparisons, so the ~49.7-day{" "}
+            <code className="font-mono text-sm">millis()</code> rollover is handled correctly. There
+            is no reed switch, no door-position sensor, no buzzer, no keypad, no RFID — the
+            firmware&apos;s notion of &ldquo;locked&rdquo; is purely the commanded relay state.
+            Closed-loop verification is a v2 hook.
           </p>
         </div>
       </section>
