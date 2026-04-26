@@ -597,6 +597,151 @@ main {
 }
 
 /* ============================================================
+   BOLHISAAB DECORATIVE — rounded-card lift, mic-pulse + ring,
+   credit/debit text, and indigo icon-badge utilities. Sourced
+   from BolHisaab's actual product code (G:/BolHisaab/src/components/
+   ui/card.tsx, ui/button.tsx, voice/MicButton.tsx, app/globals.css):
+   the rounded-xl card hover, the mic-pulse keyframe + framer-motion
+   expanding ring, the --credit/--debit domain semantics, and the
+   indigo masthead icon badge from the Header component. Each utility
+   is exposed as a [data-bh-*] attribute selector so markup reads as
+   namespaced opt-in (data-bh-rounded-card) and greps cleanly for
+   cleanup. All scoped under .theme-bolhisaab so nothing bleeds into
+   the brutalist site default or sibling project themes.
+   ============================================================ */
+
+/* Rounded card — soft 16px-radius surface that mirrors BolHisaab's
+   --radius-base. Pairs the 1px hairline border with a subtle drop
+   shadow; on hover the card lifts via a tiny scale(1.005) + a
+   stronger shadow. 240ms cubic-bezier matches the site --motion-base
+   so the hover feels native to the rest of the portfolio. Echoes the
+   <Card> primitive in BolHisaab's ui/card.tsx (rounded-xl border
+   border-border bg-card shadow-sm). */
+.theme-bolhisaab [data-bh-rounded-card] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-fg), transparent 92%);
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease);
+}
+.theme-bolhisaab [data-bh-rounded-card]:hover {
+  transform: scale(1.005);
+  box-shadow:
+    0 4px 12px color-mix(in srgb, var(--color-fg), transparent 88%),
+    0 2px 4px color-mix(in srgb, var(--color-primary), transparent 90%);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+
+/* Mic pulse — 10px indigo circle that breathes on a 1.5s cadence
+   (1 → 1.08 → 1 scale, 1 → 0.85 → 1 opacity), with a CSS-only
+   expanding ring layered behind it via ::after (1 → 1.3 scale, 0.4
+   → 0 opacity). Replicates the dual-animation in BolHisaab's
+   MicButton.tsx: the CSS mic-pulse keyframe on the FAB itself, plus
+   the Framer Motion expanding ring (scale [1, 1.3, 1], opacity
+   [0.4, 0, 0.4]). The two together create the recognisable "live
+   mic" signature without needing Framer Motion in the portfolio.
+   Reduced-motion users get the dot frozen at scale 1 + opacity 1
+   with the ring suppressed entirely. */
+.theme-bolhisaab [data-bh-mic-pulse] {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: bh-mic-pulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.theme-bolhisaab [data-bh-mic-pulse]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: bh-ring-expand 1.5s ease-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes bh-mic-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+@keyframes bh-ring-expand {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-bolhisaab [data-bh-mic-pulse] {
+    animation: none;
+    transform: scale(1);
+    opacity: 1;
+  }
+  .theme-bolhisaab [data-bh-mic-pulse]::after {
+    display: none;
+  }
+}
+
+/* Credit text — emerald color via --color-credit + tabular-nums so
+   ledger amounts align cleanly across rows. Mirrors BolHisaab's
+   <Badge variant="credit"> + BalanceStrip "aapko milna hai" pattern,
+   where the receivable side is always emerald. Apply to any inline
+   span/p that should read as "money owed TO" the user. */
+.theme-bolhisaab [data-bh-credit-text] {
+  color: var(--color-credit);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Debit text — rose color via --color-debit + tabular-nums. The
+   payable counterpart to data-bh-credit-text. Mirrors BolHisaab's
+   <Badge variant="debit"> + BalanceStrip "aapko dena hai" pattern,
+   where the payable side is always rose. Apply to any inline
+   span/p that should read as "money owed BY" the user. */
+.theme-bolhisaab [data-bh-debit-text] {
+  color: var(--color-debit);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Icon badge — 32×32 square with rounded-2xl (16px) corners, indigo
+   background, and white foreground for inline SVG/emoji icons. Mirrors
+   the masthead app-icon treatment in BolHisaab's Header component
+   (small primary-colored square that anchors the logotype). Use to
+   wrap a single inline icon (h-4 w-4 lucide SVG, emoji, etc.) in any
+   navigation row, list item, or section heading. */
+.theme-bolhisaab [data-bh-icon-badge] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ============================================================
    PRINT — admissions-officer-friendly PDF / paper output
    Goal: black ink on white paper, no shell chrome, no decoration,
    page-break-aware, URLs visible inline. Forces light-style tokens
