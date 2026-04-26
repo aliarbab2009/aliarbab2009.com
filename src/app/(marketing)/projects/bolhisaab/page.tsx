@@ -457,7 +457,7 @@ $$;`}
       </section>
 
       {/* § 09 — POLISH */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 09
@@ -519,6 +519,100 @@ $$;`}
             MediaRecorder MIME rejection by Sarvam&apos;s validator; Whisper&apos;s noisy-input
             self-repeat; Chrome speech-recognition&apos;s auto-end race with user-stop.
           </p>
+        </div>
+      </section>
+
+      {/* § 10 — LIMITATIONS */}
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 10
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Honest limits
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-3 md:col-span-10">
+          <ul className="ml-6 max-w-prose list-disc space-y-3 text-base leading-relaxed text-[var(--color-fg)]">
+            <li>
+              <strong className="font-medium">No application-level rate limiting.</strong>{" "}
+              <code className="font-mono text-sm">/api/parse</code>,{" "}
+              <code className="font-mono text-sm">/api/transcribe</code>, and{" "}
+              <code className="font-mono text-sm">/api/tts</code> accept any caller. Implicit limits
+              exist (Vercel <code className="font-mono text-sm">maxDuration</code>, Groq TPM/RPM,
+              Sarvam quota) but no app-level token bucket.
+            </li>
+            <li>
+              <strong className="font-medium">Voice transcripts persisted indefinitely.</strong>{" "}
+              Every commit writes <code className="font-mono text-sm">voice_transcript</code> +{" "}
+              <code className="font-mono text-sm">parsed_intent</code> to Postgres for forensics and
+              audit. Intentional, but a real production deployment would need a
+              right-to-be-forgotten hook.
+            </li>
+            <li>
+              <strong className="font-medium">No CSRF tokens.</strong> Routes accept multipart
+              form-data with cookie-based session. Real exploitation risk is low, but it&apos;s a
+              missing layer worth flagging.
+            </li>
+            <li>
+              <strong className="font-medium">
+                Anonymous-auth means cookie clear = orphaned ledger.
+              </strong>{" "}
+              No phone/email recovery path. Trade-off taken explicitly to remove onboarding friction
+              for the target user.
+            </li>
+            <li>
+              <strong className="font-medium">Push-to-stop, not VAD.</strong> True hands-free with
+              voice-activity detection was deferred — the current tap-to-stop is reliable but still
+              requires one tap.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* § 11 — NUMBERS */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 11
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Numbers
+          </p>
+        </div>
+        <div className="col-span-12 md:col-span-10">
+          <ul className="grid grid-cols-2 gap-0 border-2 border-[var(--color-border)] md:grid-cols-4">
+            {[
+              ["~200ms", "Llama 8B intent parse"],
+              ["~150ms", "saved per turn by RPC"],
+              ["~500–800ms", "saved end-to-end"],
+              ["0.85", "auto-commit threshold"],
+              ["200", "LRU intent-cache entries"],
+              ["3 + 2", "ASR backends + LLM tiers"],
+              ["5", "JSON-defense layers"],
+              ["88px", "mic FAB diameter"],
+              ["500ms", "min recording duration"],
+              ["63M", "Indian shopkeepers (TAM)"],
+              ["27", "documented gotchas fixed"],
+              ["8", "voice-state machine states"],
+            ].map(([num, label], i) => (
+              <li
+                key={label}
+                className={
+                  "border-[var(--color-border)] p-5 " +
+                  (i % 2 === 0 ? "border-r-2" : "") +
+                  (i < 10 ? "border-b-2" : "") +
+                  "md:border-r-2" +
+                  (i < 8 ? "md:border-b-2" : "")
+                }
+              >
+                <p className="font-mono text-2xl font-medium text-[var(--color-primary)]">{num}</p>
+                <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
+                  {label}
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </div>
