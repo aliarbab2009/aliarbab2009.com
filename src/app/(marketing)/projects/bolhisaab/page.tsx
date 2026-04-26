@@ -313,7 +313,7 @@ export default function BolHisaabPage() {
       </section>
 
       {/* § 07 — INTENT PARSER + HINGLISH */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 07
@@ -385,6 +385,73 @@ RULES:
             consistently reports 0.9+ on clean utterances, so most single-sentence commands are
             saved in one round trip. The Undo is what makes this safe: voiding is a soft delete that
             preserves the audit trail.
+          </p>
+        </div>
+      </section>
+
+      {/* § 08 — LEDGER */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 08
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Ledger
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Append-only by construction. One RPC, one round trip.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The ledger is <strong className="font-medium">append-only with soft delete</strong>. The{" "}
+            <code className="font-mono text-sm">transactions</code> table is the source of truth;
+            balances come from a <code className="font-mono text-sm">party_balances</code> SQL view;
+            reversals set <code className="font-mono text-sm">voided_at</code> (and{" "}
+            <code className="font-mono text-sm">voided_reason</code>) instead of deleting rows.
+            Every read filters <code className="font-mono text-sm">voided_at IS NULL</code>. Once a
+            transaction is in, it&apos;s there forever — even when voided — which is the right
+            posture for an accounting product where dispute-resolution and audit matter more than
+            storage.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Every voice-originated row also stores its{" "}
+            <code className="font-mono text-sm">voice_transcript</code> (raw shopkeeper utterance)
+            and <code className="font-mono text-sm">parsed_intent</code> (full LLM JSON) as JSONB
+            columns. Two reasons: forensics (&ldquo;wait, what did Ram actually say?&rdquo; is a
+            real question users ask weeks later) and a corpus for re-training prompts when the model
+            behaviour drifts.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Writes flow through <code className="font-mono text-sm">commit_voice_tx</code>, a{" "}
+            <code className="font-mono text-sm">security invoker</code> PL/pgSQL function that runs
+            as the calling user so RLS still applies:
+          </p>
+          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+            {`create or replace function commit_voice_tx(
+  _shop_id uuid, _party_id uuid, _amount numeric,
+  _direction text, _mode text,
+  _voice_transcript text, _parsed_intent jsonb
+) returns table(tx_id uuid, new_balance numeric)
+language plpgsql security invoker as $$
+  -- insert + balance read in one round-trip; ~150ms saved per turn
+  -- against the Singapore region's RTT from India.
+$$;`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Authentication is a deliberate UX choice:{" "}
+            <strong className="font-medium">anonymous Supabase auth</strong> with no email, phone,
+            or OTP. The user types a shop name and is in. Identity is{" "}
+            <code className="font-mono text-sm">auth.uid() ↔ shops.owner_id</code>, and every row is
+            scoped by RLS. Currency rendering uses Indian numbering throughout (
+            <code className="font-mono text-sm">₹1,23,456</code> via{" "}
+            <code className="font-mono text-sm">{`Intl.NumberFormat("en-IN")`}</code>). Color
+            semantics are domain-named: <code className="font-mono text-sm">--credit</code>{" "}
+            (emerald) and <code className="font-mono text-sm">--debit</code> (rose) live as design
+            tokens, not generic UI sugar — the design vocabulary mirrors the ledger vocabulary.
           </p>
         </div>
       </section>
