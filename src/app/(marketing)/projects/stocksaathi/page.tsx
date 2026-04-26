@@ -95,53 +95,56 @@ export default function StockSaathiPage() {
       </section>
 
       {/* § 02 — ACCESS (deploy + source) */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 02
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Access
-          </p>
+      <section className="mb-20 grid grid-cols-12 gap-4 pt-10">
+        <div className="col-span-12 flex flex-col gap-1 md:col-span-2">
+          <p data-ss-section-number>§ 02</p>
+          <p data-ss-section-label>Access</p>
         </div>
         <div className="col-span-12 md:col-span-10">
-          <ul className="grid grid-cols-1 gap-0 border-2 border-[var(--color-border)] md:grid-cols-2">
-            <li
-              data-ss-card-hover
-              className="border-b-2 border-[var(--color-border)] p-6 md:border-r-2 md:border-b-0"
-            >
-              <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
-                Production
-              </p>
+          <ul className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <li data-ss-rounded-card className="flex flex-col gap-3 px-6 py-6 sm:px-7">
+              <div className="flex items-center gap-3">
+                <span data-ss-icon-square aria-hidden>
+                  ↗
+                </span>
+                <p data-ss-section-label>Production</p>
+              </div>
               <Link
                 href={project.liveUrl!}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 inline-flex items-baseline gap-2 font-mono text-lg font-medium hover:text-[var(--color-primary)]"
+                className="inline-flex items-baseline gap-2 font-mono text-lg font-semibold text-[var(--color-fg)] hover:text-[var(--color-primary)]"
               >
                 stocksaathi.co.in <span aria-hidden>↗</span>
               </Link>
-              <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
-                <span data-ss-pulse-dot className="mr-2 inline-block align-middle"></span>
-                Live at Vercel · 3,000+ BSE/NSE stocks
-                <span data-ss-saffron-badge className="ml-2">
-                  India
+              <div className="flex flex-wrap items-center gap-2 text-[12px] text-[var(--color-muted)]">
+                <span className="inline-flex items-center gap-2">
+                  <span data-ss-pulse-dot className="inline-block align-middle"></span>
+                  Live at Vercel
                 </span>
-              </p>
+                <span aria-hidden className="text-[var(--color-border)]">
+                  ·
+                </span>
+                <span>3,000+ BSE/NSE stocks</span>
+                <span data-ss-saffron-badge>India</span>
+              </div>
             </li>
-            <li data-ss-card-hover className="p-6">
-              <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
-                Source
-              </p>
+            <li data-ss-rounded-card className="flex flex-col gap-3 px-6 py-6 sm:px-7">
+              <div className="flex items-center gap-3">
+                <span data-ss-icon-square aria-hidden>
+                  ⌥
+                </span>
+                <p data-ss-section-label>Source</p>
+              </div>
               <Link
                 href={project.repoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 inline-flex items-baseline gap-2 font-mono text-lg font-medium hover:text-[var(--color-primary)]"
+                className="inline-flex items-baseline gap-2 font-mono text-lg font-semibold text-[var(--color-fg)] hover:text-[var(--color-primary)]"
               >
                 github.com/aliarbab2009/StockSaathi <span aria-hidden>↗</span>
               </Link>
-              <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
+              <p className="text-[12px] text-[var(--color-muted)]">
                 Vanilla ES Modules · Python · Supabase · Multi-provider LLM
               </p>
             </li>
