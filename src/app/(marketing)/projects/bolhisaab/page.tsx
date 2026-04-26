@@ -337,18 +337,17 @@ export default function BolHisaabPage() {
       </section>
 
       {/* § 07 — INTENT PARSER + HINGLISH */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 pt-10">
         <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 07
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Intent
-          </p>
+          <div data-bh-section-header>
+            <span data-bh-section-badge>07</span>
+            <span data-bh-section-label>Intent</span>
+          </div>
         </div>
         <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            data-bh-section-heading
+            className="text-[clamp(1.75rem,3vw,2.75rem)]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Indian numerals as deterministic mappings, not LLM arithmetic.
@@ -360,7 +359,7 @@ export default function BolHisaabPage() {
             mappings, payment-mode synonyms, honorific stripping, and a strict JSON schema with{" "}
             <code className="font-mono text-sm">null</code> (never omitted) for unknown fields:
           </p>
-          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+          <pre data-bh-code-block>
             {`You parse Hindi / Hinglish / English shopkeeper voice transcripts into JSON.
 Output JSON ONLY — no prose, no markdown fences.
 
