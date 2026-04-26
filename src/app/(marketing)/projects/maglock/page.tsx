@@ -115,51 +115,257 @@ export default function MagLockPage() {
 
       <div data-maglock-double-rule className="mb-10"></div>
 
-      {/* § 02 — ACCESS */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 02
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Access
-          </p>
+      {/* § 02 — ACCESS — dual-device HUD topology */}
+      <section className="mb-20 grid grid-cols-12 gap-4">
+        <div data-maglock-section-label className="col-span-12 md:col-span-2">
+          <span>§ 02</span>
+          <span>Access</span>
         </div>
-        <div className="col-span-12 md:col-span-10">
-          <ul className="grid grid-cols-1 gap-0 border-2 border-[var(--color-border)] md:grid-cols-2">
-            <li
-              data-maglock-state="connecting"
-              className="border-b-2 border-[var(--color-border)] p-6 md:border-r-2 md:border-b-0"
+        <div className="col-span-12 flex flex-col gap-4 md:col-span-10">
+          {/* Two HUD panels — lock controller + camera */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* Card 1 — LOCK CONTROLLER */}
+            <div
+              data-maglock-brackets
+              data-maglock-state="unlocked"
+              className="flex flex-col gap-4 border-2 p-5"
+              style={{
+                background:
+                  "radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 60%), var(--color-surface)",
+                boxShadow:
+                  "0 0 18px color-mix(in srgb, var(--color-primary) 18%, transparent), inset 0 0 32px color-mix(in srgb, var(--color-primary) 6%, transparent)",
+              }}
             >
-              <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
-                Deployment
-              </p>
-              <p className="mt-2 font-mono text-lg font-medium text-[var(--color-muted)]">
-                Hardware-dependent
-              </p>
-              <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
-                Flutter + ESP32 · local-network only
-              </p>
-            </li>
-            <li data-maglock-state="unlocked" className="p-6">
-              <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
-                Source
-              </p>
-              <Link
-                href={project.repoUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-2 inline-flex items-baseline gap-2 font-mono text-lg font-medium hover:text-[var(--color-primary)]"
+              <div className="flex items-baseline justify-between gap-2">
+                <p
+                  style={{
+                    fontFamily: "var(--font-orbitron), var(--font-display)",
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    letterSpacing: "0.3em",
+                    textTransform: "uppercase",
+                    color: "var(--color-primary)",
+                  }}
+                >
+                  ESP32 Lock Controller
+                </p>
+                <span
+                  style={{
+                    fontFamily: "var(--font-vt323), var(--font-mono)",
+                    fontSize: "13px",
+                    color: "color-mix(in srgb, var(--color-primary) 70%, var(--color-muted))",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  PORT 80
+                </span>
+              </div>
+              <p
+                className="flex items-center gap-2"
+                style={{
+                  fontFamily: "var(--font-orbitron), var(--font-display)",
+                  fontSize: "12px",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                  color: "var(--color-primary)",
+                }}
               >
-                github.com/aliarbab2009/MagLock-Protocol <span aria-hidden>↗</span>
-              </Link>
-              <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
-                Flutter · Dart · ESP32 · Arduino C++
+                <span
+                  data-maglock-pulse
+                  aria-hidden
+                  className="inline-block h-2 w-2 rounded-full"
+                  style={{
+                    background: "var(--color-primary)",
+                    boxShadow: "0 0 8px var(--color-primary)",
+                  }}
+                />
+                ONLINE · 192.168.4.100
               </p>
-            </li>
-          </ul>
+              {/* Endpoint chips */}
+              <ul className="flex flex-wrap gap-2">
+                {(
+                  [
+                    ["GET", "/status"],
+                    ["POST", "/lock"],
+                    ["POST", "/unlock"],
+                    ["POST", "/timer"],
+                  ] as const
+                ).map(([verb, path]) => (
+                  <li
+                    key={verb + path}
+                    data-maglock-brackets
+                    className="flex items-baseline gap-1.5 px-2.5 py-1"
+                    style={{
+                      border:
+                        "1px solid color-mix(in srgb, var(--color-primary) 35%, var(--color-border))",
+                      background:
+                        "color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-2))",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--font-orbitron), var(--font-display)",
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        color: "var(--color-secondary)",
+                      }}
+                    >
+                      {verb}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-vt323), var(--font-mono)",
+                        fontSize: "13px",
+                        color: "var(--color-primary)",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {path}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Card 2 — CAMERA */}
+            <div
+              data-maglock-brackets
+              data-maglock-state="unlocked"
+              className="flex flex-col gap-4 border-2 p-5"
+              style={{
+                background:
+                  "radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--color-secondary) 8%, transparent), transparent 60%), var(--color-surface)",
+                borderColor: "color-mix(in srgb, var(--color-secondary) 60%, var(--color-primary))",
+                boxShadow:
+                  "0 0 18px color-mix(in srgb, var(--color-secondary) 18%, transparent), inset 0 0 32px color-mix(in srgb, var(--color-secondary) 6%, transparent)",
+              }}
+            >
+              <div className="flex items-baseline justify-between gap-2">
+                <p
+                  style={{
+                    fontFamily: "var(--font-orbitron), var(--font-display)",
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    letterSpacing: "0.3em",
+                    textTransform: "uppercase",
+                    color: "var(--color-secondary)",
+                  }}
+                >
+                  ESP32-CAM AI-Thinker
+                </p>
+                <span
+                  style={{
+                    fontFamily: "var(--font-vt323), var(--font-mono)",
+                    fontSize: "13px",
+                    color: "color-mix(in srgb, var(--color-secondary) 70%, var(--color-muted))",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  PORT 80
+                </span>
+              </div>
+              <p
+                className="flex items-center gap-2"
+                style={{
+                  fontFamily: "var(--font-orbitron), var(--font-display)",
+                  fontSize: "12px",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                  color: "var(--color-secondary)",
+                }}
+              >
+                <span
+                  data-maglock-pulse
+                  aria-hidden
+                  className="inline-block h-2 w-2 rounded-full"
+                  style={{
+                    background: "var(--color-secondary)",
+                    boxShadow: "0 0 8px var(--color-secondary)",
+                  }}
+                />
+                ONLINE · 192.168.4.101
+              </p>
+              {/* Endpoint chips */}
+              <ul className="flex flex-wrap gap-2">
+                {(
+                  [
+                    ["GET", "/stream"],
+                    ["GET", "/capture"],
+                    ["GET", "/led"],
+                  ] as const
+                ).map(([verb, path]) => (
+                  <li
+                    key={verb + path}
+                    data-maglock-brackets
+                    className="flex items-baseline gap-1.5 px-2.5 py-1"
+                    style={{
+                      border:
+                        "1px solid color-mix(in srgb, var(--color-secondary) 35%, var(--color-border))",
+                      background:
+                        "color-mix(in srgb, var(--color-secondary) 4%, var(--color-surface-2))",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--font-orbitron), var(--font-display)",
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        color: "var(--color-primary)",
+                      }}
+                    >
+                      {verb}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-vt323), var(--font-mono)",
+                        fontSize: "13px",
+                        color: "var(--color-secondary)",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {path}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Source link — kept as a smaller third panel */}
+          <div
+            data-maglock-brackets
+            className="flex flex-wrap items-center justify-between gap-3 border-2 p-4"
+            style={{
+              borderColor: "color-mix(in srgb, var(--color-primary) 30%, var(--color-border))",
+              background: "var(--color-surface-2)",
+            }}
+          >
+            <p data-maglock-uppercase-label data-size="sm">
+              Source · Flutter · Dart · ESP32 · Arduino C++
+            </p>
+            <Link
+              href={project.repoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-baseline gap-2 font-medium text-[var(--color-primary)] hover:opacity-80"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "14px",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+              }}
+            >
+              github.com/aliarbab2009/MagLock-Protocol <span aria-hidden>↗</span>
+            </Link>
+          </div>
         </div>
       </section>
+
+      <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 03 — STACK */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
