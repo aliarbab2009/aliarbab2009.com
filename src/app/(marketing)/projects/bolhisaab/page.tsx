@@ -182,27 +182,70 @@ export default function BolHisaabPage() {
         </div>
       </section>
 
-      {/* § 05 — CASE STUDY (Phase 2 prose lands May 16+) */}
+      {/* § 05 — ARCHITECTURE */}
       <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 05
           </p>
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Case
+            Architecture
           </p>
         </div>
-        <div className="col-span-12 md:col-span-10">
-          <div className="border-2 border-dashed border-[var(--color-border)] p-10 text-center">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-              Full case study — coming soon
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)]">
-              An interactive voice-demo mockup, the full architecture (mic → Groq Whisper → Llama
-              intent parser → Supabase → Hindi TTS), a code walkthrough of the intent extractor, and
-              screenshots ship in Phase 2 of the build.
-            </p>
-          </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Four sequential calls collapsed into one. ~500–800ms saved.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The hot path is a single endpoint,{" "}
+            <code className="font-mono text-sm">POST /api/voice</code>. It collapses what used to be
+            four sequential calls (
+            <code className="font-mono text-sm">/transcribe → /parse → handleIntent → commit</code>)
+            into one round trip — saving ~500–800ms end-to-end. The route accepts either a
+            pre-computed transcript (from the browser&apos;s Web Speech API) or an audio blob (from
+            MediaRecorder), then runs STT → Llama parse → party resolution → confidence-gated
+            auto-commit in a single Vercel function.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Speech-to-text is a three-tier auto-select decided at mount time:{" "}
+            <strong className="font-medium">Sarvam Saarika v2</strong> when the API key is set
+            (flagship Indian-language ASR, far stronger than generic Whisper on Hinglish + Indian
+            numerals), <strong className="font-medium">browser Web Speech</strong> on Chrome
+            (streaming, free, audio never leaves device — saves ~400ms vs an upload round trip),{" "}
+            <strong className="font-medium">Groq Whisper-large-v3-turbo</strong> as the floor for
+            non-Chrome browsers, with a Devanagari prompt that biases the decoder toward shopkeeper
+            vocabulary. After STT, a <code className="font-mono text-sm">dedupeRepeats()</code>{" "}
+            helper collapses Whisper&apos;s known double-utterance hallucination before the LLM sees
+            the text.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Intent parsing is two-tier.{" "}
+            <strong className="font-medium">Llama 3.1 8B-instant</strong> is the primary at{" "}
+            <code className="font-mono text-sm">temperature: 0</code>,{" "}
+            <code className="font-mono text-sm">max_tokens: 400</code>,{" "}
+            <code className="font-mono text-sm">{`response_format: { type: "json_object" }`}</code>{" "}
+            — returns in ~200ms. <strong className="font-medium">Llama 3.3 70B-versatile</strong> is
+            the fallback (~800ms), reached only when 8B JSON cannot be parsed even after a regex
+            extraction pass. <code className="font-mono text-sm">gpt-oss-120b</code> was explicitly
+            rejected as primary — it failed Groq&apos;s strict{" "}
+            <code className="font-mono text-sm">json_object</code> validator ~80% of the time,
+            doubling effective latency to ~1800ms once the fallback kicked in.{" "}
+            <strong className="font-medium">Smaller + tolerant beat bigger + brittle.</strong>
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The parser sits behind a 200-entry in-memory LRU keyed by transcript + context hash;
+            only complete intents are cached. Defense-in-depth against malformed LLM JSON runs in{" "}
+            <strong className="font-medium">five layers</strong>: JSON mode at the API boundary, a
+            regex extractor for stray prose, a hand-written{" "}
+            <code className="font-mono text-sm">normalize()</code> that fills missing keys with{" "}
+            <code className="font-mono text-sm">null</code> and coerces enums, Zod parse, and a 70B
+            fallback retry. If everything still fails, the route returns a hard-coded{" "}
+            <code className="font-mono text-sm">UNKNOWN</code> so the user always gets some spoken
+            response.
+          </p>
         </div>
       </section>
     </div>
