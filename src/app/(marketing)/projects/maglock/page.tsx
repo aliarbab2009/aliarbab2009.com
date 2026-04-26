@@ -395,7 +395,7 @@ export default function MagLockPage() {
       </section>
 
       {/* § 08 — FLUTTER APP */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 08
@@ -479,6 +479,83 @@ _streamSub = res.stream.listen((chunk) {
             calling <code className="font-mono text-sm">notifyListeners()</code> so the status
             banner renders <code className="font-mono text-sm">⏱ 7s … 6s … 5s …</code>. Sacrifices
             the cleaner fire-once timer for tighter UX feedback.
+          </p>
+        </div>
+      </section>
+
+      {/* § 09 — MAGGY VOICE ASSISTANT */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 09
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Maggy
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            The lock is the system. The AI is icing.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Status: staged, mid-integration.</strong> Maggy lives in
+            a sibling <code className="font-mono text-sm">maggy raw/</code> folder, not yet
+            relocated into <code className="font-mono text-sm">lib/services/</code>. A real
+            state-of-the-repo finding worth disclosing rather than papering over.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Speech I/O is OS-native, not on-device ML. STT is{" "}
+            <code className="font-mono text-sm">package:speech_to_text</code> — a thin wrapper over
+            Android <code className="font-mono text-sm">SpeechRecognizer</code> / iOS{" "}
+            <code className="font-mono text-sm">SFSpeechRecognizer</code>. TTS is{" "}
+            <code className="font-mono text-sm">package:flutter_tts</code>. No Whisper, no Vosk, no
+            tflite. Reasoning happens in the cloud via Grok-3 (
+            <code className="font-mono text-sm">https://api.x.ai/v1/chat/completions</code>), with{" "}
+            <code className="font-mono text-sm">temperature: 0.85</code>,{" "}
+            <code className="font-mono text-sm">max_tokens: 1024</code>, 15-second timeout. Hinglish
+            is handled at the prompt layer, not the speech layer.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">
+              Offline keyword fallback — the resilience layer.
+            </strong>{" "}
+            When Grok is unreachable, a regex/keyword detector still understands the lock vocabulary
+            and dispatches the right relay:
+          </p>
+          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+            {`String _detectOfflineLockIntent(String lower) {
+  if (lower.contains('open') || lower.contains('khol') || lower.contains('unlock')) {
+    if (lower.contains('top') || lower.contains('1') || lower.contains('ek')) return 'unlock_door1';
+    if (lower.contains('bottom') || lower.contains('2') || lower.contains('do')) return 'unlock_door2';
+    return 'unlock_all';
+  }
+  // ... mirror for lock/close/band ...
+}`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The principle: the lock is the system, the AI is icing — never let the icing break the
+            cake.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Five-layer persistent memory engine.</strong> All on{" "}
+            <code className="font-mono text-sm">shared_preferences</code>. No vector DB, no
+            embeddings, no LangChain. Eight keys:{" "}
+            <code className="font-mono text-sm">today_log</code>,{" "}
+            <code className="font-mono text-sm">today_date</code>,{" "}
+            <code className="font-mono text-sm">episodes</code>,{" "}
+            <code className="font-mono text-sm">notes</code>,{" "}
+            <code className="font-mono text-sm">profile</code>,{" "}
+            <code className="font-mono text-sm">recent_history</code>,{" "}
+            <code className="font-mono text-sm">activity_log</code>,{" "}
+            <code className="font-mono text-sm">stats</code>. When{" "}
+            <code className="font-mono text-sm">today_log</code> exceeds 50 message exchanges, the
+            oldest 50 are folded into a new Episode with auto-extracted keywords + quotes flagged
+            &ldquo;notable.&rdquo; Time-proximity scoring weights episodes within ±2 days of a
+            target +3, within ±7 days +1. ~40 lines of regex + scoring instead of a vector DB. Works
+            because the dataset is one conversation.
           </p>
         </div>
       </section>
