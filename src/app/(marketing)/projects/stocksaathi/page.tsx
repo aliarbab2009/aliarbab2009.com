@@ -179,7 +179,7 @@ export default function StockSaathiPage() {
       </section>
 
       {/* § 05 — ARCHITECTURE */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 05
@@ -249,6 +249,87 @@ IF NOT FOUND THEN RAISE EXCEPTION 'insufficient_cash'; END IF;`}
             -joined provenance string written to{" "}
             <code className="font-mono text-sm">fundamentals_cache.source</code> so data lineage
             survives the cache row.
+          </p>
+        </div>
+      </section>
+
+      {/* § 06 — AI COACH */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 06
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            AI coach
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Deterministic where stakes are high, generative where they aren&apos;t.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The coach is built around two tracks that never trade jobs.{" "}
+            <strong className="font-medium">Track 1</strong> runs nine deterministic bias detectors
+            against every BUY/SELL — panic-sell, FOMO, concentration, sector concentration,
+            disposition effect (Shefrin &amp; Statman 1985), anchoring, churning, pump-chase,
+            overtrading. Each detector is a pure function returning{" "}
+            <code className="font-mono text-sm">{`{bias, severity, evidence} | null`}</code> with
+            explicit numeric thresholds tuned against real NSE volatility (panic-sell fires at ≥5%
+            drop over 3 sessions OR ≥3% intraday, on a holding &lt;21 days at &gt;2% loss). The
+            orchestrator picks a pre-written reflection template, attaches a historical analog
+            (&ldquo;In the last 12 dips of ≥10% on the Nifty, prices recovered to their prior high
+            in a median of 22 trading days&rdquo;), and a warning level. The LLM is{" "}
+            <em>optional flavour</em>.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Track 2</strong> is the conversational chat surface
+            (&ldquo;Saathi&rdquo;) — a tool-use loop with five OpenAI-compatible function tools
+            executed in parallel via <code className="font-mono text-sm">Promise.all</code>, with
+            tool responses capped at 4000 chars before re-feeding. The crypto tool bakes the warning
+            into its own response (
+            <em>
+              note: &quot;India: crypto gains taxed at 30% + 1% TDS per trade since 2022&quot;
+            </em>
+            ) so the guardrail lands in the model&apos;s context regardless of whether the prompt
+            remembers to ask for it.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The proxy at <code className="font-mono text-sm">/api/chat</code> is a multi-provider
+            fallback chain — Gemini 2.5 Flash-Lite leads (the only Gemini model that&apos;s truly
+            non-thinking in <code className="font-mono text-sm">json_object</code> mode), then
+            Flash, then Pro, then Cerebras Llama 3.3 70B, then OpenAI. Vertex AI is preferred when{" "}
+            <code className="font-mono text-sm">GEMINI_VERTEX_PROJECT</code> is set, with region
+            pinned to <code className="font-mono text-sm">asia-south1</code> so latency stays low
+            for Indian users and data stays in-region. Three independent layers of SEBI guardrails —
+            pre-LLM regex, in-prompt rules, and a post-LLM scanner that checks{" "}
+            <code className="font-mono text-sm">reflection</code>,{" "}
+            <code className="font-mono text-sm">historical_context</code>, and{" "}
+            <code className="font-mono text-sm">suggested_q</code> for 25 forbidden phrases.
+          </p>
+          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+            {`# SEBI-SAFE GUARDRAILS (ABSOLUTE)
+- You can state a current price. That's public info.
+- You CANNOT say: "should buy", "should sell", "recommend", "target price",
+  "guaranteed", "sure shot", "will go up", "will crash".
+- You CANNOT predict future prices, returns, or outcomes.
+- If the user asks "should I buy/sell X?" → redirect to a reasoning framework
+  (business health, valuation, drawdown tolerance, portfolio fit).
+  Do not answer yes/no.`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Conversation memory is <strong className="font-medium">client-local IndexedDB</strong> —
+            the <code className="font-mono text-sm">coach_messages</code> table tags every turn with{" "}
+            <code className="font-mono text-sm">sessionId</code> and{" "}
+            <code className="font-mono text-sm">surface</code>. A power user can paste their own
+            Anthropic key in Settings, which routes their requests directly to{" "}
+            <code className="font-mono text-sm">api.anthropic.com</code> with{" "}
+            <code className="font-mono text-sm">
+              anthropic-dangerous-direct-browser-access: true
+            </code>{" "}
+            — no chat data ever leaves their device.
           </p>
         </div>
       </section>
