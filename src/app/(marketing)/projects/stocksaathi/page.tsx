@@ -178,27 +178,78 @@ export default function StockSaathiPage() {
         </div>
       </section>
 
-      {/* § 05 — CASE STUDY (Phase 1 prose lands May 16+) */}
+      {/* § 05 — ARCHITECTURE */}
       <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 05
           </p>
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Case
+            Architecture
           </p>
         </div>
-        <div className="col-span-12 md:col-span-10">
-          <div className="border-2 border-dashed border-[var(--color-border)] p-10 text-center">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-              Full case study — coming soon
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)]">
-              Architecture diagrams, live iframe embed, screenshot gallery, a demo video with
-              chapter markers, a code walkthrough of the Groq streaming coach, and a challenges
-              section ship in Phase 1 of the build (after APs, starts May 16).
-            </p>
-          </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Four-tier failover, zero pip dependencies, all money in paise.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            A Cloudflare Worker bound to{" "}
+            <code className="font-mono text-sm">stocksaathi.co.in/*</code> intercepts every request,
+            tries Vercel first, falls back to a regional Fly.io origin on 5xx/timeout, and trips a
+            KV-backed 30-second circuit breaker so a single failure doesn&apos;t cost every user a
+            9-second retry. Two Edge JS handlers (
+            <code className="font-mono text-sm">/api/chat</code>,{" "}
+            <code className="font-mono text-sm">/api/ai</code>) are inline-bundled into the Worker
+            so they keep responding even if Vercel and Fly are both down. A Cloudflare Pages
+            deployment mirrors the static tree as the third fallback.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The Python serverless tier has{" "}
+            <strong className="font-medium">zero pip dependencies</strong> — every endpoint is one{" "}
+            <code className="font-mono text-sm">BaseHTTPRequestHandler</code> subclass per file,
+            stdlib-only. Cold starts are correspondingly tiny because there is no{" "}
+            <code className="font-mono text-sm">pip install</code> step. The Fly backup origin
+            reuses these handlers unchanged via a 162-line FastAPI shim that imports each handler
+            and replays the BHTRH protocol into a Starlette response. A pytest parity test fails CI
+            if a new handler lands in <code className="font-mono text-sm">app/api/</code> without a
+            matching route in the shim.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Every mutating write goes through one of 16{" "}
+            <code className="font-mono text-sm">SECURITY DEFINER</code> PL/pgSQL RPCs. The client
+            never executes raw <code className="font-mono text-sm">UPDATE portfolios</code> — the{" "}
+            <code className="font-mono text-sm">apply_trade</code> RPC takes{" "}
+            <code className="font-mono text-sm">auth.uid()</code> itself, takes a{" "}
+            <code className="font-mono text-sm">FOR UPDATE</code> row lock, validates the trade,
+            applies cash + holdings + transactions transactionally, and returns a JSON envelope.
+            Idempotency keys are <code className="font-mono text-sm">UNIQUE(user_id, key)</code> so
+            a network-retried POST short-circuits and returns{" "}
+            <code className="font-mono text-sm">{`{ok:true, idempotent:true}`}</code> instead of
+            double-spending.
+          </p>
+          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+            {`-- apply_trade locks the row, then conditionally updates only if cash suffices.
+PERFORM 1 FROM public.portfolios WHERE user_id = v_user_id FOR UPDATE;
+UPDATE public.portfolios
+   SET cash_paise = cash_paise - v_value
+ WHERE user_id = v_user_id AND cash_paise >= v_value;
+IF NOT FOUND THEN RAISE EXCEPTION 'insufficient_cash'; END IF;`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Money is stored in <strong className="font-medium">integer paise</strong> (
+            <code className="font-mono text-sm">bigint</code>) end-to-end so portfolio totals never
+            drift via floating-point. <code className="font-mono text-sm">numeric(18,6)</code> is
+            used only for fractional MF shares. Instrument fundamentals come through a 4-tier merge
+            (Tickertape ships first because its dividend yield + P/E (TTM) are self-consistent and
+            fresher than Yahoo&apos;s consumer-page-derived numbers; Yahoo v10 + v7 fill gaps; Yahoo
+            v8/chart is anonymous last-resort), with a <code className="font-mono text-sm">+</code>
+            -joined provenance string written to{" "}
+            <code className="font-mono text-sm">fundamentals_cache.source</code> so data lineage
+            survives the cache row.
+          </p>
         </div>
       </section>
     </div>
