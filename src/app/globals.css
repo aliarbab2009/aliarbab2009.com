@@ -485,6 +485,138 @@ main {
   box-shadow: var(--glow-purple);
 }
 
+/* Section header — the MagLock-flavoured leading label/title pair.
+   Pattern: <div data-maglock-section-header><span> § XX </span><h2>Title</h2></div>
+   The small uppercase span renders in Orbitron at 10px with 0.4em
+   tracking (wider than the brutalist 0.3em default), in --color-primary.
+   The <h2> renders in Orbitron at clamp(2rem, 4vw, 3.5rem), 700 weight,
+   0.04em tracking, all-caps, with a leading "◈ " glyph rendered via
+   ::before pseudo at --color-primary opacity 0.6. Mirrors the ◈ glyph
+   header pattern from MagLock's ActivityLogPanel + TimerControlWidget
+   (see 05-widget-composition.md §2). */
+.theme-maglock [data-maglock-section-header] > span {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: inline-block;
+}
+.theme-maglock [data-maglock-section-header] > h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin: 0;
+}
+.theme-maglock [data-maglock-section-header] > h2::before {
+  content: "◈ ";
+  color: var(--color-primary);
+  opacity: 0.6;
+}
+
+/* Code block — opt-in subtle 1px border on <pre>/code surfaces that
+   brightens to --color-primary on hover with a soft half-intensity
+   green glow. 240ms cubic-bezier matches the rest of the site so the
+   transition feels native. Apply via `data-maglock-code-block` on any
+   <pre> inside .theme-maglock. */
+.theme-maglock [data-maglock-code-block] {
+  border: 1px solid var(--color-border);
+  transition:
+    border-color var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease);
+}
+.theme-maglock [data-maglock-code-block]:hover {
+  border-color: var(--color-primary);
+  box-shadow:
+    0 0 5px rgb(0 255 157 / 0.25),
+    0 0 12px 1px rgb(0 255 157 / 0.1);
+}
+
+/* State cascade — the locked / unlocked / connecting tri-state pattern
+   from MagLock's Flutter app (lib/widgets/door_control_card.dart's
+   _stateColor switch + ConnectionStatusBar's tuple getter). One source
+   of truth (the data-maglock-state attribute) cascades to color and
+   border-color so a single attribute swap re-tints the whole element.
+   See 07-state-cascade.md for the Flutter pattern this mirrors. */
+.theme-maglock [data-maglock-state="locked"] {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+.theme-maglock [data-maglock-state="unlocked"] {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.theme-maglock [data-maglock-state="connecting"] {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+/* Double-rule divider — cyberpunk HUD section divider rendered as
+   ::before + ::after pseudos: a bright 1px line at --color-primary
+   opacity 0.6, then 4px gap, then a dim 1px line at --color-border.
+   Mirrors the dual-rule pattern from ConnectionStatusBar / ActivityLog
+   (see 05-widget-composition.md §5). The element itself collapses to
+   a 6px-tall stack so it slots cleanly between sections. */
+.theme-maglock [data-maglock-double-rule] {
+  display: block;
+  height: 6px;
+  width: 100%;
+  position: relative;
+  border: 0;
+  background: transparent;
+}
+.theme-maglock [data-maglock-double-rule]::before,
+.theme-maglock [data-maglock-double-rule]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+.theme-maglock [data-maglock-double-rule]::before {
+  top: 0;
+  background: color-mix(in srgb, var(--color-primary), transparent 40%);
+}
+.theme-maglock [data-maglock-double-rule]::after {
+  top: 5px;
+  background: var(--color-border);
+}
+
+/* Breathe pulse — 1800ms ease-in-out scale + opacity oscillation that
+   mirrors the AnimatedLockIcon outer-ring breathing pattern (see
+   06-animations.md §AnimatedLockIcon). Apply via [data-maglock-pulse]
+   to any element that should feel "alive" — status dots, hero icons,
+   live-state badges. Reduced-motion users get the element frozen at
+   its rest state with no animation. */
+.theme-maglock [data-maglock-pulse] {
+  animation: maglock-breathe-pulse 1800ms ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes maglock-breathe-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-maglock [data-maglock-pulse] {
+    animation: none;
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* ============================================================
    STOCKSAATHI DECORATIVE — card-hover lift, stat-tile, pulse-dot,
    saffron-badge utilities. Sourced from StockSaathi's actual
