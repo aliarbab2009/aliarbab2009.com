@@ -28,6 +28,12 @@ dist/
 # Private calendar — tracks internal application deadlines
 PRIVATE_CALENDAR.md
 
+# Privacy-audit pattern source — contains the literal forbidden tokens we
+# scan for; must never be in the public repo. Copy from privacy-patterns.example.mjs
+# and fill in real patterns. CI gets the file via the PRIVACY_PATTERNS_BASE64
+# GitHub Actions secret (decoded at workflow start before pnpm privacy-audit).
+scripts/.privacy-patterns.local.mjs
+
 # Reference material (read-only clones of other repos — not part of this site)
 _repos/
 maglock_protocol/

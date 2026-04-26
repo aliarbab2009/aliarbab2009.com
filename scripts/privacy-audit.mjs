@@ -4,13 +4,16 @@
  *
  * Recursively scans built `.next` output + `public/` + OG image source TSX
  * for forbidden tokens. Three severity tiers:
- *   - HIGH: always fails CI (specific colleges, app-timeline language,
- *           cities Ali lives near, raw Gmail, full timezone offsets,
- *           explicit address fragments, school abbreviations)
- *   - MEDIUM: fails only when STRICT_PRIVACY=1 (secondary geo, generic
- *            Gmail patterns, "International School", weak phone shapes)
- *   - LOW: never fails — reports only (PIN-code shapes, IST/PST/EST
- *          ambiguous, birth-year-range dates)
+ *   - HIGH: always fails CI
+ *   - MEDIUM: fails only when STRICT_PRIVACY=1
+ *   - LOW: never fails — reports only
+ *
+ * The actual forbidden-token regex list lives in a gitignored sibling file
+ * `scripts/.privacy-patterns.local.mjs` so this public script contains zero
+ * literal tokens. CI gets the file via the PRIVACY_PATTERNS_BASE64 GitHub
+ * Actions secret (decoded at workflow start before `pnpm privacy-audit`).
+ * If neither the local file nor the example file is found, the audit fails
+ * loudly with instructions.
  *
  * Optional binaries (auto-detected, skipped silently if absent):
  *   - pdftotext (poppler-utils) → scans public/resume/*.pdf text
@@ -19,20 +22,51 @@
  * Usage:
  *   pnpm build && pnpm privacy-audit
  *   STRICT_PRIVACY=1 pnpm privacy-audit:strict
- *
- * Self-whitelist: this file contains forbidden tokens by necessity.
- * We scan only built/public output, never repo source.
  */
 
 import { exec } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { extname, join, relative, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 
 const execp = promisify(exec);
 const ROOT = resolve(process.cwd());
 const STRICT = process.env.STRICT_PRIVACY === "1";
+
+// ── Load forbidden patterns from the gitignored local file ────────────────
+// Falls back to the tracked example with a loud warning + non-zero exit.
+const LOCAL_PATTERNS = join(ROOT, "scripts", ".privacy-patterns.local.mjs");
+const EXAMPLE_PATTERNS = join(ROOT, "scripts", "privacy-patterns.example.mjs");
+
+async function loadForbidden() {
+  if (existsSync(LOCAL_PATTERNS)) {
+    const mod = await import(pathToFileURL(LOCAL_PATTERNS).href);
+    if (!Array.isArray(mod.FORBIDDEN)) {
+      console.error(
+        "\x1b[31m✗ scripts/.privacy-patterns.local.mjs must export a FORBIDDEN array.\x1b[0m",
+      );
+      process.exit(2);
+    }
+    return { patterns: mod.FORBIDDEN, source: "local" };
+  }
+  if (existsSync(EXAMPLE_PATTERNS)) {
+    console.error(
+      "\x1b[31m✗ scripts/.privacy-patterns.local.mjs not found.\x1b[0m\n" +
+        "  The audit needs the real pattern list to do its job.\n" +
+        "  Local dev: cp scripts/privacy-patterns.example.mjs scripts/.privacy-patterns.local.mjs\n" +
+        "             then add the real regex patterns from the project owner.\n" +
+        "  CI:        the workflow must decode PRIVACY_PATTERNS_BASE64 into\n" +
+        "             scripts/.privacy-patterns.local.mjs before running this script.\n",
+    );
+    process.exit(2);
+  }
+  console.error(
+    "\x1b[31m✗ Neither scripts/.privacy-patterns.local.mjs nor scripts/privacy-patterns.example.mjs found.\x1b[0m",
+  );
+  process.exit(2);
+}
 
 // Directories to scan (relative to repo root)
 const SCAN_DIRS = [".next/server", ".next/static", "public"];
@@ -58,87 +92,12 @@ const TEXT_EXTS = new Set([
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 
-// Forbidden patterns. severity HIGH → always fail; MEDIUM → fail in STRICT;
-// LOW → report only.
-const FORBIDDEN = [
-  // ── Specific colleges (HIGH) ────────────────────────────────────────
-  { pattern: /\bMIT\b/g, severity: "high", category: "college" },
-  { pattern: /\bHarvard\b/gi, severity: "high", category: "college" },
-  { pattern: /\bStanford\b/gi, severity: "high", category: "college" },
-  { pattern: /\bPrinceton\b/gi, severity: "high", category: "college" },
-  { pattern: /\bYale\b/gi, severity: "high", category: "college" },
-  { pattern: /\bColumbia University\b/gi, severity: "high", category: "college" },
-  { pattern: /\bCaltech\b/gi, severity: "high", category: "college" },
-  { pattern: /\bUPenn\b/gi, severity: "high", category: "college" },
-  { pattern: /\bDartmouth\b/gi, severity: "high", category: "college" },
-  { pattern: /\bCornell\b/gi, severity: "high", category: "college" },
-
-  // ── Application timeline (HIGH) ─────────────────────────────────────
-  { pattern: /\bEarly Action\b/gi, severity: "high", category: "app-timeline" },
-  { pattern: /\bRegular Action\b/gi, severity: "high", category: "app-timeline" },
-  { pattern: /\bRegular Decision\b/gi, severity: "high", category: "app-timeline" },
-  { pattern: /\bearly decision\b/gi, severity: "high", category: "app-timeline" },
-  { pattern: /\badmissions committee\b/gi, severity: "high", category: "app-timeline" },
-  { pattern: /\bcommon app\b/gi, severity: "high", category: "app-timeline" },
-  { pattern: /\bpersonal statement\b/gi, severity: "medium", category: "app-timeline" },
-
-  // ── Geo (HIGH for likely-Ali cities, MEDIUM for secondary metros) ───
-  { pattern: /\bNew Delhi\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bDelhi\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bMumbai\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bBangalore\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bBengaluru\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bGurgaon\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bGurugram\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bNoida\b/gi, severity: "high", category: "geo" },
-  { pattern: /\bChennai\b/gi, severity: "medium", category: "geo" },
-  { pattern: /\bKolkata\b/gi, severity: "medium", category: "geo" },
-  { pattern: /\bHyderabad\b/gi, severity: "medium", category: "geo" },
-
-  // ── Timezones (full offsets HIGH, abbrevs MEDIUM/LOW with negative
-  //    lookahead so identifiers ending in IST/EST don't trip) ──────────
-  { pattern: /\bIST\b(?![-_A-Z])/g, severity: "medium", category: "timezone" },
-  { pattern: /\bPST\b(?![-_A-Z])/g, severity: "low", category: "timezone" },
-  { pattern: /\bEST\b(?![-_A-Z])/g, severity: "low", category: "timezone" },
-  { pattern: /\+05:30\b/g, severity: "high", category: "timezone" },
-
-  // ── Raw Gmail (HIGH) ────────────────────────────────────────────────
-  { pattern: /foxman1544/gi, severity: "high", category: "gmail" },
-  { pattern: /[A-Za-z0-9._%+-]+@gmail\.com/gi, severity: "medium", category: "gmail-pattern" },
-  {
-    pattern: /[A-Za-z0-9._%+-]+@(?:yahoo|outlook|hotmail|icloud|protonmail)\.[a-z]{2,}/gi,
-    severity: "medium",
-    category: "personal-email",
-  },
-
-  // ── Phone numbers ───────────────────────────────────────────────────
-  { pattern: /\+91[ -]?\d{10}\b/g, severity: "high", category: "phone" },
-  { pattern: /\+91[ -]?\d{5}[ -]?\d{5}\b/g, severity: "high", category: "phone" },
-  { pattern: /\(\d{3}\)\s*\d{3}[-.\s]?\d{4}/g, severity: "high", category: "phone" },
-  // Bare 10-digit fallback — kept LOW because hashes/timestamps trip it
-  { pattern: /\b\d{10}\b/g, severity: "low", category: "phone-pattern" },
-
-  // ── Address fragments ───────────────────────────────────────────────
-  { pattern: /\bSector[- ]?\d{1,3}\b/gi, severity: "high", category: "address" },
-  { pattern: /\bBlock\s+[A-Z](?=[,.\s]|$)/g, severity: "medium", category: "address" },
-  // Indian PINs are 6 digits starting 1-9. Kept LOW — too many false positives
-  // (color hex, image dims, IDs).
-  { pattern: /\b[1-9]\d{5}\b/g, severity: "low", category: "address-pincode" },
-
-  // ── School patterns ─────────────────────────────────────────────────
-  { pattern: /\bDPS\b/g, severity: "high", category: "school-abbrev" },
-  { pattern: /\bModern School\b/gi, severity: "high", category: "school-name" },
-  {
-    pattern: /\bSt\.\s*[A-Z][A-Za-z]+(?:'s)?\s+School\b/g,
-    severity: "high",
-    category: "school-pattern",
-  },
-  { pattern: /\bInternational School\b/gi, severity: "medium", category: "school-pattern" },
-
-  // ── Birth date — Class XII 2026 implies birth ~2007/2008 ────────────
-  { pattern: /\b200[78]-\d{2}-\d{2}\b/g, severity: "low", category: "birth-date" },
-  { pattern: /\b\d{2}[\/-]\d{2}[\/-]200[78]\b/g, severity: "low", category: "birth-date" },
-];
+// FORBIDDEN is loaded dynamically from scripts/.privacy-patterns.local.mjs
+// (gitignored). See loadForbidden() above. Severity tiers:
+//   HIGH   → always fails CI (process.exit 1)
+//   MEDIUM → fails only when STRICT_PRIVACY=1
+//   LOW    → reports but never fails
+let FORBIDDEN = [];
 
 // Allowlist patterns over the surrounding LINE. If any matches, skip the hit.
 const ALLOWED_CONTEXTS = [
@@ -349,6 +308,13 @@ function sevIcon(s) {
 
 async function main() {
   console.log("🔒 Privacy audit — scanning built output...\n");
+
+  const { patterns, source } = await loadForbidden();
+  FORBIDDEN = patterns;
+  console.log(
+    `  pattern source: ${source} (${FORBIDDEN.length} regexes, ` +
+      `${FORBIDDEN.filter((f) => f.severity === "high").length} high)\n`,
+  );
 
   for (const dir of SCAN_DIRS) {
     const full = join(ROOT, dir);
