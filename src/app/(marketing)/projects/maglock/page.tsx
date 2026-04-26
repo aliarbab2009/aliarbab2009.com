@@ -182,7 +182,9 @@ export default function MagLockPage() {
           </p>
         </div>
         <div className="col-span-12 md:col-span-10">
-          <OriginBlock slug="maglock" />
+          <div data-maglock-brackets className="border-2 border-[var(--color-border)] p-8">
+            <OriginBlock slug="maglock" />
+          </div>
         </div>
       </section>
 
@@ -335,6 +337,8 @@ export default function MagLockPage() {
         </div>
       </section>
 
+      <div data-maglock-double-rule className="my-6"></div>
+
       {/* § 07 — CAMERA FIRMWARE */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div data-maglock-section-header className="col-span-12 md:col-span-2">
@@ -417,6 +421,8 @@ export default function MagLockPage() {
           </p>
         </div>
       </section>
+
+      <div data-maglock-double-rule className="my-6"></div>
 
       {/* § 08 — FLUTTER APP */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
@@ -510,6 +516,8 @@ _streamSub = res.stream.listen((chunk) {
           </p>
         </div>
       </section>
+
+      <div data-maglock-double-rule className="my-6"></div>
 
       {/* § 09 — MAGGY VOICE ASSISTANT */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
