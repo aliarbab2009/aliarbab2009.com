@@ -606,7 +606,9 @@ $$;`}
                   (i < 8 ? "md:border-b-2" : "")
                 }
               >
-                <p className="font-mono text-2xl font-medium text-[var(--color-primary)]">{num}</p>
+                <p className="font-mono text-2xl font-medium text-[var(--color-primary)] tabular-nums">
+                  {num}
+                </p>
                 <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
                   {label}
                 </p>
