@@ -268,26 +268,32 @@ export default function BolHisaabPage() {
       </section>
 
       {/* § 06 — VOICE PIPELINE */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 pt-10">
         <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 06
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Voice
-          </p>
+          <div data-bh-section-header>
+            <span data-bh-section-badge>06</span>
+            <span data-bh-section-label>Voice</span>
+          </div>
         </div>
         <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            data-bh-section-heading
+            className="text-[clamp(1.75rem,3vw,2.75rem)]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             An 8-state machine that knows when Chrome is lying.
           </h2>
+
+          {/* Note: the static visual mockup that used to live here was
+              replaced by <BolHisaabVoiceDemo /> hoisted above the fold in
+              § 01. Visitors now interact with the eight-state pipeline
+              live before they reach this section's prose, so the section
+              focuses purely on the architectural narrative. */}
+
           <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
             The client is a flat 8-state machine, stored in Zustand:
           </p>
-          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+          <pre data-bh-code-block>
             {`idle → recording → transcribing → parsing → confirming → executing → done | error`}
           </pre>
           <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
