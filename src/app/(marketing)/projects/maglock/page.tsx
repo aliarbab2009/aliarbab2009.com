@@ -368,28 +368,28 @@ export default function MagLockPage() {
       <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 03 — STACK */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 03
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Stack
-          </p>
+      <section className="mb-20 grid grid-cols-12 gap-4">
+        <div data-maglock-section-label className="col-span-12 md:col-span-2">
+          <span>§ 03</span>
+          <span>Stack</span>
         </div>
         <div className="col-span-12 md:col-span-10">
-          <ul className="flex flex-wrap gap-0">
-            {project.stack.map((tech) => (
-              <li
-                key={tech}
-                className="-mr-px -mb-px border border-[var(--color-border)] px-4 py-2 font-mono text-[11px] tracking-[0.2em] uppercase"
-              >
-                {tech}
-              </li>
-            ))}
-          </ul>
+          <div
+            data-maglock-brackets
+            className="border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] p-6"
+          >
+            <ul className="flex flex-wrap gap-3">
+              {project.stack.map((tech) => (
+                <li key={tech} data-maglock-stack-pill>
+                  {tech}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
+
+      <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 04 — ORIGIN (problem · why me · learned + pull-quote) */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
