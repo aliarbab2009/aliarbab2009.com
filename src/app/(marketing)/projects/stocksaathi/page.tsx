@@ -335,7 +335,7 @@ IF NOT FOUND THEN RAISE EXCEPTION 'insufficient_cash'; END IF;`}
       </section>
 
       {/* § 07 — TIME TRAVEL */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 07
@@ -395,6 +395,57 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
             <em>&quot;Adani Hindenburg 2023&quot;</em>, <em>&quot;hindenburg 2023 adani&quot;</em>,
             and <em>&quot;AdaniHindenburg2023&quot;</em> collapse to one cache row, one shareable
             URL, one LLM cost amortised across every user who follows the link.
+          </p>
+        </div>
+      </section>
+
+      {/* § 08 — UNIVERSE */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 08
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Universe
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            2,686 NSE equities and 13,969 mutual funds, refreshed before market open.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The instrument universe is built daily by two pure-Node (zero deps) scripts. The equity
+            build fetches the NSE master CSV, 17 NIFTY index constituent CSVs, and the NSE ETF API,
+            warming a per-host cookie jar with browser-like{" "}
+            <code className="font-mono text-sm">Sec-Fetch-*</code> headers because both NSE and
+            NiftyIndices 403 anything else. A 27-value sector taxonomy is derived through a layered
+            pipeline (NSE&apos;s industry tag → sectoral overlays → 100-line keyword regex for the
+            long-tail ~1,500 small-caps). NIFTY index membership is packed into a 5-bit field per
+            instrument, driving cap-bucket and risk-tier classification.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The MF build parses AMFI&apos;s proprietary semicolon-delimited{" "}
+            <code className="font-mono text-sm">NAVAll.txt</code> (~17,000 raw rows, ~14,000 unique
+            scheme codes), extracts AMC + category + plan + option from interleaved category
+            headers, rolls 47 SEBI sub-categories into 7 buckets (Equity / Debt / Hybrid / Index /
+            Solution / Commodity / FoF), and maps each fund to a benchmark. Output ships as
+            content-addressed immutable JSON with a Brotli-q11 sidecar. A vercel.json rewrite swaps
+            to <code className="font-mono text-sm">.br</code> when{" "}
+            <code className="font-mono text-sm">Accept-Encoding</code> contains{" "}
+            <code className="font-mono text-sm">br</code>.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Live quote caching is <strong className="font-medium">market-hours-aware</strong>:{" "}
+            <code className="font-mono text-sm">is_market_open_ist()</code> drives both the Supabase
+            TTL and the edge <code className="font-mono text-sm">Cache-Control</code> value — 5
+            seconds while NSE is open (Mon-Fri 09:15-15:30 IST), 300 seconds while closed. Eight
+            cron windows daily refresh fundamentals, instruments, and MF NAVs; crons self-bail at 50
+            seconds against Vercel&apos;s 60-second{" "}
+            <code className="font-mono text-sm">maxDuration</code> cap and resume from the next
+            paginated <code className="font-mono text-sm">?offset=</code> on the next firing.
           </p>
         </div>
       </section>
