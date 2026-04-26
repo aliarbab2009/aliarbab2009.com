@@ -711,8 +711,8 @@ main {
    Uses the --color-saffron + --color-saffron-soft tokens that
    .theme-stocksaathi already declares for both dark + light
    variants. 11px size with 0.2em tracking gives the wide letter-
-   spacing that makes uppercase legible at small sizes; 2px radius
-   keeps it crisp against StockSaathi's 12px-base radius. */
+   spacing that makes uppercase legible at small sizes; 999px radius
+   makes it a true rounded-pill matching the .pill-saffron source. */
 .theme-stocksaathi [data-ss-saffron-badge] {
   display: inline-flex;
   align-items: center;
@@ -721,11 +721,197 @@ main {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  padding: 2px 8px;
-  border-radius: 2px;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 999px;
   line-height: 1.4;
   white-space: nowrap;
+}
+
+/* Rounded card — soft-cornered card surface that mirrors StockSaathi's
+   .feature-card / .stat-tile pattern: 16px radius, 1px hairline border,
+   subtle shadow at rest, brand-tinted glow shadow + brand border on
+   hover with a -3px lift. Pairs with [data-ss-card-hover] when you
+   need both lift + the hairline rest border. The lift is intentionally
+   bigger (3px) than the original card-hover (-2px) to read more like
+   a fintech feature-card than a brutalist nudge. */
+.theme-stocksaathi [data-ss-rounded-card] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-fg), transparent 92%);
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease);
+}
+.theme-stocksaathi [data-ss-rounded-card]:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-primary) 60%, var(--color-border));
+  box-shadow:
+    0 8px 24px color-mix(in srgb, var(--color-primary), transparent 75%),
+    0 2px 6px color-mix(in srgb, var(--color-fg), transparent 90%);
+}
+
+/* Rounded outer wrapper — a softer 24px-radius container for grid
+   wrappers where individual cells use [data-ss-rounded-card] inside.
+   Provides the outer-corner softness without doubling shadows. */
+.theme-stocksaathi [data-ss-rounded-outer] {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Soft pill — rounded-full chip with brand-soft tint background and
+   brand-color text. Mirrors .pill-brand from StockSaathi's main.css
+   ({ background: var(--brand-soft); color: var(--brand) }). Used for
+   STACK chips, status pills, India-side flags, etc. The 0.04em
+   tracking is gentler than the 0.2em brutalist letter-spacing so the
+   pill reads as fintech UI rather than display type. */
+.theme-stocksaathi [data-ss-pill] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  line-height: 1.4;
+  white-space: nowrap;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
+}
+.theme-stocksaathi [data-ss-pill]:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Section header label — small SemiBold uppercase brand-color label
+   used to lead a section. Mirrors StockSaathi's feature-card section
+   sub-titles: 11px, 600 weight, --color-primary, modest 0.06em
+   tracking instead of the brutalist 0.3em. */
+.theme-stocksaathi [data-ss-section-label] {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  line-height: 1.4;
+}
+
+/* Section number — paired tiny numeral (§ 02) shown above the
+   primary label. 10px in muted color so the label gets the ink. */
+.theme-stocksaathi [data-ss-section-number] {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+/* Stat tile (rounded variant) — soft 12px-radius surface used for the
+   § 11 numbers grid. The big number inside picks up the brand color
+   via [data-ss-stat-number]. Override the existing [data-ss-stat-tile]
+   shape by combining both attributes: data-ss-stat-tile data-ss-rounded
+   collapses to this rule. Hover swaps to a 5% primary tint + brightens
+   the border to 40% primary, matching StockSaathi's .stat-tile.has-pending
+   active state. */
+.theme-stocksaathi [data-ss-stat-tile][data-ss-rounded] {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  transition:
+    background-color var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease),
+    transform var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease);
+}
+.theme-stocksaathi [data-ss-stat-tile][data-ss-rounded]:hover {
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-2));
+  border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-primary), transparent 82%);
+}
+
+/* Brand-soft icon square — 32×32 rounded-12 surface with 12% primary
+   tint background and primary-color foreground. Echoes the
+   .feature-card .icon recipe from StockSaathi (brand-soft background,
+   12px radius, grid-centered icon). Used as a leading marker on
+   section labels and feature rows. */
+.theme-stocksaathi [data-ss-icon-square] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+
+/* Code surface — soft-rounded <pre> styling for code samples inside
+   the page. Replaces the brutalist 2px border + sharp corners with a
+   12px-radius card surface, hairline border, and a subtle inset
+   shadow that matches StockSaathi's code-block treatment. */
+.theme-stocksaathi [data-ss-code] {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-fg), transparent 95%);
+}
+
+/* Watermark — invisibly faint "PAPER TRADING · VIRTUAL MONEY" SVG
+   text rotated -15deg behind a section's content. Mirrors the chart
+   watermark recipe from StockSaathi's charts.js (5.5% opacity, 700
+   weight, 0.12em letter-spacing). pointer-events:none so it never
+   intercepts clicks; user-select:none so it doesn't get highlighted
+   when the visitor selects nearby text. */
+.theme-stocksaathi [data-ss-watermark-host] {
+  position: relative;
+  isolation: isolate;
+}
+.theme-stocksaathi [data-ss-watermark-host] [data-ss-watermark] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.theme-stocksaathi [data-ss-watermark-host] [data-ss-watermark] > span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: clamp(2rem, 6vw, 5rem);
+  white-space: nowrap;
+  color: var(--color-primary);
+  opacity: 0.05;
+  transform: rotate(-15deg);
+  text-transform: uppercase;
+}
+.theme-stocksaathi [data-ss-watermark-host] > *:not([data-ss-watermark]) {
+  position: relative;
+  z-index: 1;
 }
 
 /* ============================================================
@@ -871,6 +1057,208 @@ main {
   color: var(--color-primary-fg);
   flex-shrink: 0;
   line-height: 1;
+}
+
+/* App card — the primary "BolHisaab Khaata app" card surface. Soft
+   off-white (--color-surface) with a generous 16px radius, single
+   hairline border, and a subtle layered shadow. Generous padding
+   (24px) so inner content breathes the way BolHisaab's <Card>
+   primitive does in the live app. Hover lifts the card a hair and
+   adds an indigo-tinted glow shadow. */
+.theme-bolhisaab [data-bh-app-card] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-fg), transparent 94%),
+    0 4px 12px color-mix(in srgb, var(--color-fg), transparent 92%);
+  padding: 24px;
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease);
+}
+.theme-bolhisaab [data-bh-app-card]:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-primary) 25%, var(--color-border));
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--color-fg), transparent 92%),
+    0 8px 24px color-mix(in srgb, var(--color-primary), transparent 88%);
+}
+
+/* App grid — wrapper around a multi-card group (§ 02 access pair,
+   § 09 polish grid, § 11 numbers grid) that gives the whole group
+   a single rounded-2xl shell with overflow:hidden so child borders
+   stop at the corners cleanly. Inner cells just need the existing
+   1px hairlines between them; the outer shell adds the soft
+   shadow + corner radius. */
+.theme-bolhisaab [data-bh-app-grid] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-fg), transparent 94%),
+    0 4px 12px color-mix(in srgb, var(--color-fg), transparent 92%);
+  overflow: hidden;
+}
+
+/* Section badge — the BolHisaab-style 32×32 indigo rounded-2xl square
+   that opens each section. Replaces the brutalist "§ 05" + label pair
+   with a tactile, app-feeling chip. The two-digit number sits inside
+   in white Inter SemiBold at 11px so it reads as an icon-glyph rather
+   than a code comment. Pair with [data-bh-section-label] for the
+   human-readable label on the same row. */
+.theme-bolhisaab [data-bh-section-badge] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  flex-shrink: 0;
+  line-height: 1;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-primary), transparent 70%);
+}
+
+/* Section label — Inter SemiBold at 13px in primary color, mixed
+   case (not all-caps with brutalist tracking). Pairs with
+   [data-bh-section-badge] to form a compact tappable-feeling
+   row at the start of each section. */
+.theme-bolhisaab [data-bh-section-label] {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+/* Section header row — the indigo badge + label pair with the
+   appropriate vertical alignment + gap. Drops in as a single
+   flex row at the top of any content column. */
+.theme-bolhisaab [data-bh-section-header] {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Stack pill — rounded-full chip with a 10%-indigo tint background
+   and indigo text. Mirrors BolHisaab's Badge primitive (rounded-full
+   + tinted bg). Replaces the brutalist square stack pill with the
+   app-native rounded chip so § 03 reads as a tag list inside the
+   app rather than a hairline-divided strip in a doc. */
+.theme-bolhisaab [data-bh-stack-pill] {
+  display: inline-flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-base) var(--motion-ease),
+    color var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease);
+}
+.theme-bolhisaab [data-bh-stack-pill]:hover {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  border-color: var(--color-primary);
+}
+
+/* Stat tile — the BolHisaab-app-feeling stat card for § 11 Numbers.
+   Soft surface, 16px radius, generous padding (20px), with the big
+   number in indigo Inter Medium and the label in muted body weight.
+   Hover lifts the tile a hair like the live app's BalanceStrip
+   cards. Pair with [data-bh-credit-text] / [data-bh-debit-text] on
+   the number for semantic colour overrides. */
+.theme-bolhisaab [data-bh-stat-tile] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-fg), transparent 94%);
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease);
+}
+.theme-bolhisaab [data-bh-stat-tile]:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--color-fg), transparent 90%),
+    0 6px 16px color-mix(in srgb, var(--color-primary), transparent 88%);
+}
+
+/* Code block — soft secondary surface (--color-surface-2), 12px
+   radius, gentle hairline. Replaces the brutalist 2px-bordered <pre>
+   with the warm "monospaced section inside the app" surface that
+   BolHisaab's settings/insights pages use for raw JSON / SQL
+   previews. JetBrains Mono at 11px so inline code references stay
+   legible. */
+.theme-bolhisaab [data-bh-code-block] {
+  background: var(--color-surface-2);
+  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-fg);
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--color-fg), transparent 96%);
+}
+
+/* Section divider — soft 1px hairline that replaces the brutalist
+   2px top-border between sections. Sits as a single rule with
+   no shouting; just separates. Mirrors BolHisaab's settings-page
+   list-item separators. */
+.theme-bolhisaab [data-bh-section-divider] {
+  display: block;
+  height: 1px;
+  width: 100%;
+  border: 0;
+  background: var(--color-border);
+}
+
+/* Quote card — the Hinglish pull-quote treatment. Soft surface,
+   16px radius, indigo accent ribbon on the left edge (4px),
+   generous padding. Reads like a chat-bubble screenshot from the
+   BolHisaab app rather than a doc blockquote. */
+.theme-bolhisaab [data-bh-quote-card] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-fg), transparent 94%);
+}
+
+/* Section heading — the BolHisaab-style large display heading that
+   replaces the brutalist tracking-tight all-caps treatment. Inter
+   Medium at clamp(1.75rem, 3vw, 2.75rem), normal letter-spacing,
+   primary color so the headline pops against the cream surface. */
+.theme-bolhisaab [data-bh-section-heading] {
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--color-fg);
 }
 
 /* ============================================================
@@ -1083,5 +1471,114 @@ main {
   [class*="sticky"],
   [class*="fixed"] {
     position: static !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   StockSaathi Time Travel — interactive crash-replay chart.
+
+   The component lives at src/components/project/stocksaathi-time-travel.tsx
+   and renders inside the .theme-stocksaathi world (project page). On
+   scenario change the held + panic <path> elements get a fresh React
+   key, which remounts them and replays the draw-in animation. The
+   panic-day slider does NOT remount — it just updates the d attribute
+   live, so scrubbing feels snappy.
+
+   Reduced motion: collapses the draw-in to an instant reveal. The
+   panic-day marker transitions are already small (200ms) and stay on
+   for everyone — they're informational, not decorative. */
+.theme-stocksaathi [data-tt-host] {
+  /* Subtle teal glow at rest so the chart pops above the fold. */
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-fg), transparent 92%),
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 8%, transparent),
+    0 12px 36px color-mix(in srgb, var(--color-primary), transparent 88%);
+}
+
+.theme-stocksaathi [data-tt-line] {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: ss-tt-draw 1100ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.theme-stocksaathi [data-tt-line="panic"] {
+  /* Stagger the panic line slightly behind held so the eye reads
+     "held first, then the cost of panic." */
+  animation-delay: 180ms;
+}
+
+@keyframes ss-tt-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Slider thumb — hand-styled because the default WebKit thumb is huge
+   and ignores accent-color sizing. Matches StockSaathi's coarse-pointer
+   tap targets while staying visually quiet on desktop. */
+.theme-stocksaathi [data-tt-slider] {
+  outline: none;
+}
+.theme-stocksaathi [data-tt-slider]::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-danger);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 1px var(--color-danger);
+  cursor: pointer;
+  transition: transform 120ms var(--motion-ease);
+}
+.theme-stocksaathi [data-tt-slider]::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.theme-stocksaathi [data-tt-slider]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--color-danger);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 1px var(--color-danger);
+  cursor: pointer;
+}
+.theme-stocksaathi [data-tt-slider]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 35%, transparent);
+  border-radius: 999px;
+}
+
+/* Readout numbers — fade-bump on every value change. The big-number <p>
+   is React-keyed on the formatted value, so this animation re-fires
+   each time the user scrubs the slider or picks a new scenario. */
+.theme-stocksaathi [data-tt-readout] {
+  animation: ss-tt-readout 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes ss-tt-readout {
+  0% {
+    opacity: 0.4;
+    transform: translateY(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scenario buttons — focus-visible ring picks up the brand cobalt so
+   keyboard users see a clear focus state without the disabled-looking
+   default browser ring. */
+.theme-stocksaathi [data-tt-scenario-btn]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-stocksaathi [data-tt-line] {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .theme-stocksaathi [data-tt-readout] {
+    animation: none;
   }
 }
