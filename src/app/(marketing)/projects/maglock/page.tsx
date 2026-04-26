@@ -879,21 +879,13 @@ _streamSub = res.stream.listen((chunk) {
       <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 11 — NUMBERS */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div data-maglock-section-header className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 11
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Numbers
-          </p>
+      <section className="grid grid-cols-12 gap-4">
+        <div data-maglock-section-label className="col-span-12 md:col-span-2">
+          <span>§ 11</span>
+          <span>Numbers</span>
         </div>
         <div className="col-span-12 md:col-span-10">
-          <div data-maglock-double-rule className="my-6"></div>
-          <ul
-            data-maglock-brackets
-            className="grid grid-cols-2 gap-0 border-2 border-[var(--color-border)] md:grid-cols-4"
-          >
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {(
               [
                 ["800ms", "relay-fire cooldown", "green"],
@@ -909,26 +901,34 @@ _streamSub = res.stream.listen((chunk) {
                 ["~280", "lines in LockProvider", "purple"],
                 ["49.7 days", "millis() rollover safe", "purple"],
               ] as const
-            ).map(([num, label, glow], i) => (
-              <li
-                key={label}
-                {...{ "data-maglock-glow": glow }}
-                className={
-                  "border-[var(--color-border)] p-5 " +
-                  (i % 2 === 0 ? "border-r-2" : "") +
-                  (i < 10 ? "border-b-2" : "") +
-                  "md:border-r-2" +
-                  (i < 8 ? "md:border-b-2" : "")
-                }
-              >
-                <p className="font-mono text-2xl font-medium text-[var(--color-primary)] tabular-nums">
-                  {num}
-                </p>
-                <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
-                  {label}
-                </p>
-              </li>
-            ))}
+            ).map(([num, label, glow]) => {
+              const tone = glow === "green" ? undefined : glow;
+              const numColor =
+                glow === "cyan"
+                  ? "#00d4ff"
+                  : glow === "purple"
+                    ? "#c77dff"
+                    : "var(--color-primary)";
+              return (
+                <li key={label} data-maglock-stat-cell data-tone={tone} data-maglock-brackets>
+                  <p
+                    className="tabular-nums"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 700,
+                      fontSize: "clamp(1.25rem, 2vw, 1.75rem)",
+                      letterSpacing: "0.02em",
+                      color: numColor,
+                    }}
+                  >
+                    {num}
+                  </p>
+                  <p data-maglock-uppercase-label data-size="sm" className="mt-3">
+                    {label}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>
