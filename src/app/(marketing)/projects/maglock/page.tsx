@@ -564,89 +564,22 @@ export default function MagLockPage() {
       <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 07 — CAMERA FIRMWARE */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div data-maglock-section-header className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 07
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Cam fw
-          </p>
+      <section className="mb-20 grid grid-cols-12 gap-4">
+        <div data-maglock-section-label className="col-span-12 md:col-span-2">
+          <span>§ 07</span>
+          <span>Cam fw</span>
         </div>
-        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+        <div
+          data-maglock-brackets
+          className="col-span-12 flex flex-col gap-6 border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] p-8 md:col-span-10"
+        >
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            data-maglock-hud-heading
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium text-[var(--color-primary)]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Init large, drop small. Three flags coordinate stream + snapshot.
           </h2>
-          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
-            <strong className="font-medium">The init-large-then-shrink trick.</strong> The camera
-            driver allocates PSRAM buffers based on the framesize at{" "}
-            <code className="font-mono text-sm">esp_camera_init</code>. Initialising at the largest
-            mode the firmware will ever use — QXGA 2048×1536 at JPEG quality 1 — guarantees the
-            buffers fit any subsequent mode change. The firmware then immediately drops the sensor
-            to streaming mode (SVGA 800×600 at quality 12). Switching to QXGA on{" "}
-            <code className="font-mono text-sm">/capture</code> later doesn&apos;t have to
-            reallocate. No fragmentation, no contiguous-PSRAM gambling.
-          </p>
-          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
-            <strong className="font-medium">Streaming protocol.</strong> Plain{" "}
-            <code className="font-mono text-sm">multipart/x-mixed-replace; boundary=frame</code>{" "}
-            MJPEG over HTTP/1.1. The OV2640 hardware-encodes JPEG itself — the ESP32 just shovels
-            bytes from PSRAM to the network, which is why a $7 camera module can stream at 25fps
-            from a 240MHz chip. The streaming task is pinned to core 1 with an 8KB stack, leaving
-            core 0 free for the WebServer:
-          </p>
-          <pre
-            data-maglock-brackets
-            data-maglock-code-block
-            className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
-          >
-            {`void streamTask(void* arg) {
-  WiFiClient* client = (WiFiClient*)arg;
-  client->print("HTTP/1.1 200 OK\\r\\nContent-Type: "
-                "multipart/x-mixed-replace; boundary=frame\\r\\n\\r\\n");
-  _streaming = true;
-
-  while (client->connected() && !_stopStream) {
-    if (_snapPending) { vTaskDelay(10 / portTICK_PERIOD_MS); continue; }
-    camera_fb_t* fb = esp_camera_fb_get();
-    if (!fb) break;
-    // write boundary + headers + frame bytes...
-    esp_camera_fb_return(fb);
-    vTaskDelay(STREAM_DELAY / portTICK_PERIOD_MS);
-    esp_task_wdt_reset();    // feed the watchdog every frame
-  }
-  // cleanup, vTaskDelete(NULL)...
-}`}
-          </pre>
-          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
-            <code className="font-mono text-sm">esp_task_wdt_reset()</code> per frame prevents a
-            slow client (a dropped TCP connection that hasn&apos;t FIN&apos;d yet) from blocking{" "}
-            <code className="font-mono text-sm">client-&gt;write</code> long enough to trip the
-            watchdog and reboot the chip.
-          </p>
-          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
-            <strong className="font-medium">Stream/snap coordination.</strong> Three volatile flags
-            and a 2-second timeout, no mutexes:{" "}
-            <code className="font-mono text-sm">_streaming</code> (set by the streaming task while
-            alive), <code className="font-mono text-sm">_stopStream</code> (set by{" "}
-            <code className="font-mono text-sm">/capture</code> to ask the loop to exit),{" "}
-            <code className="font-mono text-sm">_snapPending</code> (causes the loop to spin instead
-            of grab while a snapshot is in flight, so the stream resumes immediately afterward
-            without re-spawning the task). The capture handler waits up to 2 seconds for the
-            streaming loop to acknowledge, switches the sensor to QXGA + q=1, settles 300ms, flushes
-            3 stale frames, grabs one fresh frame, returns it as{" "}
-            <code className="font-mono text-sm">image/jpeg</code>, then drops the sensor back to
-            SVGA. <code className="font-mono text-sm">fb_count = 2</code> paired with{" "}
-            <code className="font-mono text-sm">CAMERA_GRAB_LATEST</code> means frames are dropped,
-            never queued — no accumulated latency.
-          </p>
-        </div>
-      </section>
-
-      <div data-maglock-double-rule className="my-6"></div>
 
       {/* § 08 — FLUTTER APP */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
