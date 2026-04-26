@@ -486,6 +486,117 @@ main {
 }
 
 /* ============================================================
+   STOCKSAATHI DECORATIVE — card-hover lift, stat-tile, pulse-dot,
+   saffron-badge utilities. Sourced from StockSaathi's actual
+   product CSS (G:/StockSaathi/app/css/components.css and main.css):
+   the .feature-card hover lift, the .stat-tile + .has-pending tint,
+   the .data-badge pulse-dot keyframe, and the .pill-saffron India
+   accent. Each utility is exposed as a [data-ss-*] attribute selector
+   so the markup reads as namespaced opt-in (data-ss-card-hover) and
+   greps cleanly for cleanup. All scoped under .theme-stocksaathi so
+   nothing bleeds into the brutalist site default or sibling project
+   themes.
+   ============================================================ */
+
+/* Card hover lift — -2px translateY on hover with a brand-tinted
+   border-color shift and a soft medium-blur shadow. Mirrors the
+   .feature-card / .hero .stat hover interaction in StockSaathi
+   (translateY + border-color → brand + sh-sm). 240ms cubic-bezier
+   matches the site --motion-base/ease so the lift feels native. */
+.theme-stocksaathi [data-ss-card-hover] {
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease);
+}
+.theme-stocksaathi [data-ss-card-hover]:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-primary) 60%, var(--color-border));
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-primary), transparent 80%);
+}
+
+/* Stat tile — compact stat-card variant. The big number inside picks
+   up the brand color via the [data-ss-stat-number] hook and runs in
+   tabular-nums so digits don't shift between values. Hover swaps the
+   background to a 5%-primary-tinted surface-2 (color-mix), echoing
+   the .stat-tile.has-pending highlight from StockSaathi. */
+.theme-stocksaathi [data-ss-stat-tile] {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  padding: 12px 16px;
+  transition:
+    background-color var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease);
+}
+.theme-stocksaathi [data-ss-stat-tile]:hover {
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface-2));
+  border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+}
+.theme-stocksaathi [data-ss-stat-tile] [data-ss-stat-number] {
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Pulse-dot — 6px circular brand-color dot that breathes on a 1.8s
+   cadence (1 → 1.2 → 1 scale, 0.7 → 1 → 0.7 opacity). Drop in
+   alongside text as a "live" indicator: the data-ss-pulse-dot
+   attribute targets the dot element directly so it can be a <span/>
+   inside a flex row. Reduced-motion users get the dot frozen at full
+   scale + full opacity — no movement, still legible. */
+.theme-stocksaathi [data-ss-pulse-dot] {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: ss-pulse-dot 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ss-pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-stocksaathi [data-ss-pulse-dot] {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Saffron badge — small uppercase pill that flags India-specific
+   items (NSE/BSE references, INR amounts, SEBI mentions, etc.).
+   Uses the --color-saffron + --color-saffron-soft tokens that
+   .theme-stocksaathi already declares for both dark + light
+   variants. 11px size with 0.2em tracking gives the wide letter-
+   spacing that makes uppercase legible at small sizes; 2px radius
+   keeps it crisp against StockSaathi's 12px-base radius. */
+.theme-stocksaathi [data-ss-saffron-badge] {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-saffron-soft);
+  color: var(--color-saffron);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 2px 8px;
+  border-radius: 2px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* ============================================================
    PRINT — admissions-officer-friendly PDF / paper output
    Goal: black ink on white paper, no shell chrome, no decoration,
    page-break-aware, URLs visible inline. Forces light-style tokens
