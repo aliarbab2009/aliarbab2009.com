@@ -66,12 +66,10 @@ export default function BolHisaabPage() {
       {/* § 01 — HEADLINE + PITCH */}
       <section className="mb-20 grid grid-cols-12 gap-4">
         <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 01
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Pitch
-          </p>
+          <div data-bh-section-header>
+            <span data-bh-section-badge>01</span>
+            <span data-bh-section-label>Pitch</span>
+          </div>
         </div>
         <div className="col-span-12 flex flex-col gap-8 md:col-span-10">
           <h1
@@ -89,8 +87,21 @@ export default function BolHisaabPage() {
           <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
             {project.description}
           </p>
+
+          {/* Interactive voice demo — hoisted above the fold so visitors
+              experience the "speak a transaction, ledger writes itself"
+              promise within seconds of landing. Cycles through four
+              canonical Hinglish phrases on each tap (Ram credit, Shyam
+              debit, Geeta saade-paanch credit, Mohan hazaar debit). The
+              static § 06 mockup is intentionally retired — this client
+              component replaces it. */}
+          <div className="mt-2 max-w-xl">
+            <BolHisaabVoiceDemo />
+          </div>
+
           <blockquote
-            className="mt-2 max-w-2xl border-l-4 border-[var(--color-primary)] pl-6 text-xl leading-snug text-[var(--color-fg)] italic"
+            data-bh-quote-card
+            className="mt-2 max-w-2xl text-xl leading-snug text-[var(--color-fg)] italic"
             style={{ fontFamily: "var(--font-display)" }}
           >
             &ldquo;Ram ne 500 udhaar liya.&rdquo;
