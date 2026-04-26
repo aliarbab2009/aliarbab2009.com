@@ -392,21 +392,22 @@ export default function MagLockPage() {
       <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 04 — ORIGIN (problem · why me · learned + pull-quote) */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 04
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Origin
-          </p>
+      <section className="mb-20 grid grid-cols-12 gap-4">
+        <div data-maglock-section-label className="col-span-12 md:col-span-2">
+          <span>§ 04</span>
+          <span>Origin</span>
         </div>
         <div className="col-span-12 md:col-span-10">
-          <div data-maglock-brackets className="border-2 border-[var(--color-border)] p-8">
+          <div
+            data-maglock-brackets
+            className="border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] p-8"
+          >
             <OriginBlock slug="maglock" />
           </div>
         </div>
       </section>
+
+      <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 05 — ARCHITECTURE */}
       <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
