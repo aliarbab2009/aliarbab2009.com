@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getProjectBySlug } from "@/config/projects";
 import { siteConfig } from "@/config/site";
 import { OriginBlock } from "@/components/project/origin-block";
+import StockSaathiTimeTravel from "@/components/project/stocksaathi-time-travel";
 import { JsonLd } from "@/components/seo/json-ld";
 import { projectJsonLd } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
@@ -29,33 +30,25 @@ export default function StockSaathiPage() {
       <div className="brutalist-grid" aria-hidden />
 
       {/* MASTHEAD */}
-      <header className="mb-16 grid grid-cols-12 gap-4 border-b-2 border-[var(--color-border)] pb-6">
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Author
-          </p>
-          <p className="font-mono text-sm font-medium">{siteConfig.author}</p>
+      <header data-ss-rounded-card className="mb-16 grid grid-cols-12 gap-4 px-6 py-5 sm:px-8">
+        <div className="col-span-6 flex flex-col gap-1 md:col-span-3">
+          <p data-ss-section-number>Author</p>
+          <p className="text-sm font-semibold text-[var(--color-fg)]">{siteConfig.author}</p>
         </div>
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Project
-          </p>
-          <p className="font-mono text-sm font-medium">01 / {project.name}</p>
+        <div className="col-span-6 flex flex-col gap-1 md:col-span-3">
+          <p data-ss-section-number>Project</p>
+          <p className="text-sm font-semibold text-[var(--color-fg)]">01 / {project.name}</p>
         </div>
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Status
-          </p>
-          <p className="font-mono text-sm font-medium text-[var(--color-primary)]">
+        <div className="col-span-6 flex flex-col gap-1 md:col-span-3">
+          <p data-ss-section-number>Status</p>
+          <p className="inline-flex items-center text-sm font-semibold text-[var(--color-primary)]">
             <span data-ss-pulse-dot className="mr-2 inline-block align-middle"></span>
             {project.statusLabel}
           </p>
         </div>
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Navigate
-          </p>
-          <p className="font-mono text-sm font-medium">
+        <div className="col-span-6 flex flex-col gap-1 md:col-span-3">
+          <p data-ss-section-number>Navigate</p>
+          <p className="text-sm font-semibold">
             <Link href="/projects" className="hover:text-[var(--color-primary)]">
               ← projects
             </Link>
