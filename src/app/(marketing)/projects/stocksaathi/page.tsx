@@ -132,7 +132,7 @@ export default function StockSaathiPage() {
                 github.com/aliarbab2009/StockSaathi <span aria-hidden>↗</span>
               </Link>
               <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
-                Vanilla JS · Python · Supabase · Groq LLM
+                Vanilla ES Modules · Python · Supabase · Multi-provider LLM
               </p>
             </li>
           </ul>

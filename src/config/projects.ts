@@ -36,9 +36,10 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "stocksaathi",
     name: "StockSaathi",
-    tagline: "AI-coached investment simulator for teens",
+    tagline:
+      "Behavioural-finance simulator that lets users replay any market crisis on real Yahoo data",
     description:
-      "A virtual ₹1,00,000 trading simulator with an AI coach trained on behavioral finance. Real-time data on 3,000+ BSE/NSE stocks, a Time Travel mode that replays historical crashes, and a parent-consent flow for teen sign-ups.",
+      "A paper-trading platform that pairs the entire NSE universe and AMFI mutual-fund catalogue with an AI coach designed never to give buy or sell advice. A Time Travel mode replays real Indian market crises — demonetisation, COVID, Adani-Hindenburg — day by day, so a virtual portfolio's held vs panic-sold lines diverge over actual historical closes. Live at stocksaathi.co.in.",
     theme: "stocksaathi",
     status: "live",
     statusLabel: "Live in production",
@@ -46,8 +47,19 @@ export const PROJECTS: readonly Project[] = [
     repoUrl: "https://github.com/aliarbab2009/StockSaathi",
     primaryColor: "#00B386",
     year: 2025,
-    lastUpdatedISO: "2026-04-25",
-    stack: ["Vanilla JS", "Python", "Vercel", "Supabase", "Groq LLM", "Yahoo Finance"],
+    lastUpdatedISO: "2026-04-26",
+    stack: [
+      "Vanilla ES Modules",
+      "Vercel Python (stdlib-only)",
+      "Supabase + RLS + RPCs",
+      "Cloudflare Workers (front-door)",
+      "Fly.io failover",
+      "Gemini 2.5 Flash/Pro (Vertex)",
+      "Cerebras Llama 3.3 70B",
+      "Anthropic Claude Sonnet 4.5",
+      "Yahoo + Tickertape + AMFI",
+      "Service Worker + IndexedDB",
+    ],
   },
   {
     slug: "bolhisaab",
