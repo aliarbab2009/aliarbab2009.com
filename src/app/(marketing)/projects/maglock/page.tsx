@@ -49,8 +49,15 @@ export default function MagLockPage() {
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             Status
           </p>
-          <p className="font-mono text-sm font-medium text-[var(--color-primary)]">
-            ◆ {project.statusLabel}
+          <p
+            data-maglock-state="connecting"
+            className="font-mono text-sm font-medium text-[var(--color-primary)]"
+          >
+            <span
+              data-maglock-pulse
+              className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--color-primary)] align-middle"
+            ></span>
+            {project.statusLabel}
           </p>
         </div>
         <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
@@ -268,7 +275,10 @@ export default function MagLockPage() {
             active-low opto-isolated relay boards (the typical case) and active-high MOSFET drivers,
             without touching call sites:
           </p>
-          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+          <pre
+            data-maglock-code-block
+            className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
+          >
             {`#define RELAY1_PIN       26     // Door 1 magnetic lock
 #define RELAY2_PIN       27     // Door 2 magnetic lock
 #define STATUS_LED_PIN    2     // Onboard blue LED
@@ -286,6 +296,7 @@ export default function MagLockPage() {
           </p>
           <pre
             data-maglock-brackets
+            data-maglock-code-block
             className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
           >
             {`void setup() {
@@ -358,6 +369,7 @@ export default function MagLockPage() {
           </p>
           <pre
             data-maglock-brackets
+            data-maglock-code-block
             className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
           >
             {`void streamTask(void* arg) {
@@ -440,6 +452,7 @@ export default function MagLockPage() {
           </p>
           <pre
             data-maglock-brackets
+            data-maglock-code-block
             className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
           >
             {`List<int> buf = [];
@@ -537,7 +550,10 @@ _streamSub = res.stream.listen((chunk) {
             When Grok is unreachable, a regex/keyword detector still understands the lock vocabulary
             and dispatches the right relay:
           </p>
-          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+          <pre
+            data-maglock-code-block
+            className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
+          >
             {`String _detectOfflineLockIntent(String lower) {
   if (lower.contains('open') || lower.contains('khol') || lower.contains('unlock')) {
     if (lower.contains('top') || lower.contains('1') || lower.contains('ek')) return 'unlock_door1';
@@ -649,22 +665,25 @@ _streamSub = res.stream.listen((chunk) {
             data-maglock-brackets
             className="grid grid-cols-2 gap-0 border-2 border-[var(--color-border)] md:grid-cols-4"
           >
-            {[
-              ["800ms", "relay-fire cooldown"],
-              ["~15fps", "MJPEG display throttle"],
-              ["500/200KB", "buffer guard / trim"],
-              ["2000ms", "status poll interval"],
-              ["3000ms", "stream reconnect backoff"],
-              ["20s", "GET /capture timeout"],
-              ["2048×1536", "QXGA snapshot @ q=1"],
-              ["800×600", "SVGA stream @ ~25fps"],
-              ["8KB", "FreeRTOS streaming stack"],
-              ["246 / 297", "lines (lock fw / cam fw)"],
-              ["~280", "lines in LockProvider"],
-              ["49.7 days", "millis() rollover safe"],
-            ].map(([num, label], i) => (
+            {(
+              [
+                ["800ms", "relay-fire cooldown", "green"],
+                ["~15fps", "MJPEG display throttle", "cyan"],
+                ["500/200KB", "buffer guard / trim", "cyan"],
+                ["2000ms", "status poll interval", "green"],
+                ["3000ms", "stream reconnect backoff", "green"],
+                ["20s", "GET /capture timeout", "green"],
+                ["2048×1536", "QXGA snapshot @ q=1", "cyan"],
+                ["800×600", "SVGA stream @ ~25fps", "cyan"],
+                ["8KB", "FreeRTOS streaming stack", "cyan"],
+                ["246 / 297", "lines (lock fw / cam fw)", "purple"],
+                ["~280", "lines in LockProvider", "purple"],
+                ["49.7 days", "millis() rollover safe", "purple"],
+              ] as const
+            ).map(([num, label, glow], i) => (
               <li
                 key={label}
+                {...{ "data-maglock-glow": glow }}
                 className={
                   "border-[var(--color-border)] p-5 " +
                   (i % 2 === 0 ? "border-r-2" : "") +
