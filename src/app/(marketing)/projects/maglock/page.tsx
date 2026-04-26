@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { getProjectBySlug } from "@/config/projects";
 import { siteConfig } from "@/config/site";
+import MagLockControlPanel from "@/components/project/maglock-control-panel";
 import { OriginBlock } from "@/components/project/origin-block";
 import { JsonLd } from "@/components/seo/json-ld";
 import { projectJsonLd } from "@/lib/json-ld";
@@ -26,27 +27,28 @@ export default function MagLockPage() {
   return (
     <div
       data-maglock-scanline
+      data-maglock-bracket-frame
       className="relative mx-auto w-full max-w-[1400px] overflow-hidden px-6 pt-16 pb-16 sm:pt-20"
     >
       <JsonLd data={projectJsonLd("maglock")} />
       <div className="brutalist-grid" aria-hidden />
 
       {/* MASTHEAD */}
-      <header className="mb-16 grid grid-cols-12 gap-4 border-b-2 border-[var(--color-border)] pb-6">
+      <header className="mb-16 grid grid-cols-12 gap-4 border-b-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] pb-6">
         <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+          <p data-maglock-uppercase-label data-size="sm">
             Author
           </p>
           <p className="font-mono text-sm font-medium">{siteConfig.author}</p>
         </div>
         <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+          <p data-maglock-uppercase-label data-size="sm">
             Project
           </p>
           <p className="font-mono text-sm font-medium">03 / {project.name}</p>
         </div>
         <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+          <p data-maglock-uppercase-label data-size="sm">
             Status
           </p>
           <p
@@ -61,7 +63,7 @@ export default function MagLockPage() {
           </p>
         </div>
         <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+          <p data-maglock-uppercase-label data-size="sm">
             Navigate
           </p>
           <p className="font-mono text-sm font-medium">
@@ -580,6 +582,231 @@ export default function MagLockPage() {
           >
             Init large, drop small. Three flags coordinate stream + snapshot.
           </h2>
+
+          {/* § 07 — MJPEG STREAM VIEWPORT MOCKUP */}
+          <div
+            data-maglock-brackets
+            className="relative mx-auto w-full max-w-[640px] overflow-hidden border-2 bg-black"
+            style={{
+              aspectRatio: "16 / 9",
+              borderColor: "var(--color-primary)",
+              boxShadow: "var(--glow-green)",
+            }}
+            role="img"
+            aria-label="MagLock ESP32-CAM live stream viewport — fake MJPEG frame"
+          >
+            {/* Scanline overlay */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "repeating-linear-gradient(to bottom, transparent 0, transparent 2px, color-mix(in srgb, var(--color-primary) 4%, transparent) 2px, color-mix(in srgb, var(--color-primary) 4%, transparent) 3px)",
+                mixBlendMode: "screen",
+              }}
+            />
+            {/* Faint vignette + radial green tint to suggest a sensor's signal */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 70%)",
+              }}
+            />
+
+            {/* Top-left REC badge */}
+            <div
+              className="absolute top-3 left-3 flex items-center gap-2 px-2 py-1"
+              style={{
+                background: "color-mix(in srgb, var(--color-danger) 15%, black)",
+                border: "1px solid var(--color-danger)",
+              }}
+            >
+              <span
+                data-maglock-pulse
+                aria-hidden
+                className="inline-block h-2 w-2 rounded-full"
+                style={{
+                  background: "var(--color-danger)",
+                  boxShadow: "0 0 6px var(--color-danger)",
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: "var(--font-orbitron), var(--font-display)",
+                  fontSize: "11px",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                  color: "var(--color-danger)",
+                  fontWeight: 700,
+                }}
+              >
+                REC
+              </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-vt323), var(--font-mono)",
+                  fontSize: "13px",
+                  color: "var(--color-danger)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                02:14:33
+              </span>
+            </div>
+
+            {/* Top-right FLASH badge */}
+            <div
+              className="absolute top-3 right-3 px-2 py-1"
+              style={{
+                background: "color-mix(in srgb, var(--color-warning) 12%, black)",
+                border: "1px solid var(--color-warning)",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-orbitron), var(--font-display)",
+                  fontSize: "11px",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                  color: "var(--color-warning)",
+                  fontWeight: 700,
+                }}
+              >
+                FLASH OFF
+              </span>
+            </div>
+
+            {/* Center LIVE caption */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+              <p
+                data-maglock-pulse
+                style={{
+                  fontFamily: "var(--font-orbitron), var(--font-display)",
+                  fontSize: "32px",
+                  fontWeight: 700,
+                  letterSpacing: "0.3em",
+                  textTransform: "uppercase",
+                  color: "var(--color-primary)",
+                  textShadow:
+                    "0 0 12px var(--color-primary), 0 0 28px color-mix(in srgb, var(--color-primary) 60%, transparent)",
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="mr-3 inline-block h-3 w-3 rounded-full align-middle"
+                  style={{
+                    background: "var(--color-primary)",
+                    boxShadow: "0 0 10px var(--color-primary)",
+                  }}
+                />
+                LIVE
+              </p>
+              <p
+                style={{
+                  fontFamily: "var(--font-vt323), var(--font-mono)",
+                  fontSize: "16px",
+                  color: "color-mix(in srgb, var(--color-primary) 75%, var(--color-fg))",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                ESP32-CAM @ 192.168.4.101 · SVGA 800×600 · ~25 FPS
+              </p>
+            </div>
+
+            {/* Bottom-left filename / timestamp */}
+            <div className="absolute right-3 bottom-3 left-3 flex items-baseline justify-between">
+              <span
+                style={{
+                  fontFamily: "var(--font-vt323), var(--font-mono)",
+                  fontSize: "12px",
+                  color: "color-mix(in srgb, var(--color-primary) 60%, var(--color-muted))",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                /stream · multipart/x-mixed-replace
+              </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-vt323), var(--font-mono)",
+                  fontSize: "12px",
+                  color: "color-mix(in srgb, var(--color-primary) 60%, var(--color-muted))",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Q12 · fb_count=2
+              </span>
+            </div>
+          </div>
+
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">The init-large-then-shrink trick.</strong> The camera
+            driver allocates PSRAM buffers based on the framesize at{" "}
+            <code className="font-mono text-sm">esp_camera_init</code>. Initialising at the largest
+            mode the firmware will ever use — QXGA 2048×1536 at JPEG quality 1 — guarantees the
+            buffers fit any subsequent mode change. The firmware then immediately drops the sensor
+            to streaming mode (SVGA 800×600 at quality 12). Switching to QXGA on{" "}
+            <code className="font-mono text-sm">/capture</code> later doesn&apos;t have to
+            reallocate. No fragmentation, no contiguous-PSRAM gambling.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Streaming protocol.</strong> Plain{" "}
+            <code className="font-mono text-sm">multipart/x-mixed-replace; boundary=frame</code>{" "}
+            MJPEG over HTTP/1.1. The OV2640 hardware-encodes JPEG itself — the ESP32 just shovels
+            bytes from PSRAM to the network, which is why a $7 camera module can stream at 25fps
+            from a 240MHz chip. The streaming task is pinned to core 1 with an 8KB stack, leaving
+            core 0 free for the WebServer:
+          </p>
+          <pre
+            data-maglock-brackets
+            data-maglock-code-block
+            className="overflow-x-auto border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-border))] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed"
+          >
+            {`void streamTask(void* arg) {
+  WiFiClient* client = (WiFiClient*)arg;
+  client->print("HTTP/1.1 200 OK\\r\\nContent-Type: "
+                "multipart/x-mixed-replace; boundary=frame\\r\\n\\r\\n");
+  _streaming = true;
+
+  while (client->connected() && !_stopStream) {
+    if (_snapPending) { vTaskDelay(10 / portTICK_PERIOD_MS); continue; }
+    camera_fb_t* fb = esp_camera_fb_get();
+    if (!fb) break;
+    // write boundary + headers + frame bytes...
+    esp_camera_fb_return(fb);
+    vTaskDelay(STREAM_DELAY / portTICK_PERIOD_MS);
+    esp_task_wdt_reset();    // feed the watchdog every frame
+  }
+  // cleanup, vTaskDelete(NULL)...
+}`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <code className="font-mono text-sm">esp_task_wdt_reset()</code> per frame prevents a
+            slow client (a dropped TCP connection that hasn&apos;t FIN&apos;d yet) from blocking{" "}
+            <code className="font-mono text-sm">client-&gt;write</code> long enough to trip the
+            watchdog and reboot the chip.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            <strong className="font-medium">Stream/snap coordination.</strong> Three volatile flags
+            and a 2-second timeout, no mutexes:{" "}
+            <code className="font-mono text-sm">_streaming</code> (set by the streaming task while
+            alive), <code className="font-mono text-sm">_stopStream</code> (set by{" "}
+            <code className="font-mono text-sm">/capture</code> to ask the loop to exit),{" "}
+            <code className="font-mono text-sm">_snapPending</code> (causes the loop to spin instead
+            of grab while a snapshot is in flight, so the stream resumes immediately afterward
+            without re-spawning the task). The capture handler waits up to 2 seconds for the
+            streaming loop to acknowledge, switches the sensor to QXGA + q=1, settles 300ms, flushes
+            3 stale frames, grabs one fresh frame, returns it as{" "}
+            <code className="font-mono text-sm">image/jpeg</code>, then drops the sensor back to
+            SVGA. <code className="font-mono text-sm">fb_count = 2</code> paired with{" "}
+            <code className="font-mono text-sm">CAMERA_GRAB_LATEST</code> means frames are dropped,
+            never queued — no accumulated latency.
+          </p>
+        </div>
+      </section>
+
+      <div data-maglock-double-rule className="mb-10"></div>
 
       {/* § 08 — FLUTTER APP */}
       <section className="mb-20 grid grid-cols-12 gap-4">
