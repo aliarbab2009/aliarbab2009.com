@@ -24,7 +24,10 @@ export const metadata: Metadata = buildMetadata({
 
 export default function MagLockPage() {
   return (
-    <div className="relative mx-auto w-full max-w-[1400px] px-6 pt-16 pb-16 sm:pt-20">
+    <div
+      data-maglock-scanline
+      className="relative mx-auto w-full max-w-[1400px] overflow-hidden px-6 pt-16 pb-16 sm:pt-20"
+    >
       <JsonLd data={projectJsonLd("maglock")} />
       <div className="brutalist-grid" aria-hidden />
 
@@ -633,7 +636,10 @@ _streamSub = res.stream.listen((chunk) {
           </p>
         </div>
         <div className="col-span-12 md:col-span-10">
-          <ul className="grid grid-cols-2 gap-0 border-2 border-[var(--color-border)] md:grid-cols-4">
+          <ul
+            data-maglock-brackets
+            className="grid grid-cols-2 gap-0 border-2 border-[var(--color-border)] md:grid-cols-4"
+          >
             {[
               ["800ms", "relay-fire cooldown"],
               ["~15fps", "MJPEG display throttle"],
