@@ -183,7 +183,7 @@ export default function BolHisaabPage() {
       </section>
 
       {/* § 05 — ARCHITECTURE */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 05
@@ -245,6 +245,69 @@ export default function BolHisaabPage() {
             fallback retry. If everything still fails, the route returns a hard-coded{" "}
             <code className="font-mono text-sm">UNKNOWN</code> so the user always gets some spoken
             response.
+          </p>
+        </div>
+      </section>
+
+      {/* § 06 — VOICE PIPELINE */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 06
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Voice
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <h2
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            An 8-state machine that knows when Chrome is lying.
+          </h2>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            The client is a flat 8-state machine, stored in Zustand:
+          </p>
+          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+            {`idle → recording → transcribing → parsing → confirming → executing → done | error`}
+          </pre>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Status drives every visible piece of chrome — the Hinglish status pill above the mic
+            (&ldquo;Sun raha hoon… (stop ke liye dabayein)&rdquo;, &ldquo;Soch raha hoon…&rdquo;,
+            &ldquo;Likh raha hoon…&rdquo;), the pulsing dot in the header, and the confirmation
+            sheet. The store deliberately does not cache server data — that lives in TanStack Query
+            (15s <code className="font-mono text-sm">staleTime</code>, refetch on focus). Voice
+            state is per-turn and ephemeral; ledger state is shared and live.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Capture is push-to-stop (one tap to start, one tap to end) — not push-to-talk and not
+            auto-stop on silence. Auto-stop kept truncating natural pauses mid-sentence (&ldquo;Ram
+            ne… [pause] paanch sau udhaar liya&rdquo; became just &ldquo;Ram ne&rdquo;). Web Speech
+            runs <code className="font-mono text-sm">continuous: true</code> with a{" "}
+            <code className="font-mono text-sm">finalRef</code> and{" "}
+            <code className="font-mono text-sm">endedRef</code> that ride through Chrome&apos;s
+            three end-conditions (silence, user-stop, error) without hanging the UI. MediaRecorder
+            uses 16 kHz mono with echo-cancellation/noise-suppression/AGC and a{" "}
+            <code className="font-mono text-sm">MIN_DURATION_MS = 500</code> guard because Whisper
+            hallucinates Hindi nonsense on sub-half-second clips.
+          </p>
+          <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
+            Two cross-platform shims earn their keep. iOS Safari requires a user gesture to unlock
+            audio playback — <code className="font-mono text-sm">primeTTS()</code> speaks an empty
+            utterance at volume 0 on the first mic tap to unlock both{" "}
+            <code className="font-mono text-sm">speechSynthesis</code> and the{" "}
+            <code className="font-mono text-sm">&lt;Audio&gt;</code> element. MediaRecorder labels
+            webm blobs as <code className="font-mono text-sm">audio/webm;codecs=opus</code>, but
+            Sarvam&apos;s validator only accepts the bare{" "}
+            <code className="font-mono text-sm">audio/webm</code> — so the server strips the{" "}
+            <code className="font-mono text-sm">;codecs=...</code> suffix and re-wraps the blob as a
+            fresh File before sending. A separate{" "}
+            <code className="font-mono text-sm">{`<PrewarmVoice />`}</code> component fires a
+            fire-and-forget POST on app mount — empty FormData hits the 400 early-return inside the
+            handler but still forces Turbopack to compile the heavy voice route end-to-end before
+            the user&apos;s first real press. The &ldquo;first request is slow&rdquo; cliff vanishes
+            during demos.
           </p>
         </div>
       </section>
