@@ -65,23 +65,19 @@ export default function StockSaathiPage() {
 
       {/* § 01 — HEADLINE + PITCH */}
       <section className="mb-20 grid grid-cols-12 gap-4">
-        <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 01
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Pitch
-          </p>
+        <div className="col-span-12 flex flex-col gap-1 md:col-span-2">
+          <p data-ss-section-number>§ 01</p>
+          <p data-ss-section-label>Pitch</p>
         </div>
         <div className="col-span-12 flex flex-col gap-8 md:col-span-10">
           <h1
-            className="text-[clamp(3.5rem,8vw,7rem)] leading-[0.9] font-medium tracking-[-0.02em] text-[var(--color-primary)]"
+            className="text-[clamp(3.5rem,8vw,7rem)] leading-[0.9] font-bold tracking-[-0.02em] text-[var(--color-primary)]"
             style={{ fontFamily: "var(--font-display)", fontFeatureSettings: '"ss01" 1' }}
           >
             {project.name}
           </h1>
           <p
-            className="max-w-3xl text-2xl leading-snug font-medium text-[var(--color-fg)]"
+            className="max-w-3xl text-2xl leading-snug font-semibold text-[var(--color-fg)]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {project.tagline}.
@@ -89,6 +85,12 @@ export default function StockSaathiPage() {
           <p className="max-w-prose text-base leading-relaxed text-[var(--color-fg)]">
             {project.description}
           </p>
+          {/* Above-the-fold interactive product demo. The dual-line chart
+              dramatises the marquee "intervention works" claim before the
+              visitor scrolls — pick a crash, drag the panic-day slider,
+              watch the cost of fear move in rupees. Single client boundary;
+              everything else on the page stays server-rendered. */}
+          <StockSaathiTimeTravel />
         </div>
       </section>
 
