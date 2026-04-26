@@ -654,14 +654,12 @@ $$;`}
       </section>
 
       {/* § 10 — LIMITATIONS */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 pt-10">
         <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 10
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Honest limits
-          </p>
+          <div data-bh-section-header>
+            <span data-bh-section-badge>10</span>
+            <span data-bh-section-label>Honest limits</span>
+          </div>
         </div>
         <div className="col-span-12 flex flex-col gap-3 md:col-span-10">
           <ul className="ml-6 max-w-prose list-disc space-y-3 text-base leading-relaxed text-[var(--color-fg)]">
