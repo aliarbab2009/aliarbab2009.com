@@ -331,18 +331,20 @@ IF NOT FOUND THEN RAISE EXCEPTION 'insufficient_cash'; END IF;`}
       </section>
 
       {/* § 07 — TIME TRAVEL */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 07
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Time travel
-          </p>
+      <section data-ss-watermark-host className="mb-20 grid grid-cols-12 gap-4 pt-10">
+        <div data-ss-watermark aria-hidden>
+          <span>PAPER TRADING · VIRTUAL MONEY</span>
+        </div>
+        <div className="col-span-12 flex flex-col gap-1 md:col-span-2">
+          <p data-ss-section-number>§ 07</p>
+          <p data-ss-section-label>Time travel</p>
         </div>
         <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          {/* The interactive Time Travel chart now lives above the fold
+              (rendered inside § 01). § 07 keeps the prose explainer of
+              the three-phase grounded narrative pipeline. */}
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-bold tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             The LLM picks the story. Yahoo data is the truth.
@@ -375,7 +377,7 @@ IF NOT FOUND THEN RAISE EXCEPTION 'insufficient_cash'; END IF;`}
               numbers are facts.
             </li>
           </ol>
-          <pre className="overflow-x-auto border-2 border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 font-mono text-[11px] leading-relaxed">
+          <pre data-ss-code className="overflow-x-auto p-4 font-mono text-[11px] leading-relaxed">
             {`// Overwrite any hallucinated numbers with the REAL ones. The LLM's
 // numbers are a sanity cross-check; the real-data numbers are truth.
 meta.startIndex = Math.round(startIdx * 100) / 100;
