@@ -90,17 +90,26 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "maglock",
     name: "MagLock Protocol",
-    tagline: "Dual-door smart lock with live camera + voice AI",
+    tagline: "Two-door ESP32 + Flutter smart lock — LAN-only, no cloud, no telemetry",
     description:
-      "Flutter app, ESP32 dual-relay firmware, ESP32-CAM MJPEG stream, and an optional Hinglish-speaking voice assistant named Maggy. Neon-cyberpunk UI, local-network only, no cloud.",
+      "ESP32 firmware drives the dual-door magnetic-lock relays; an ESP32-CAM streams MJPEG over the same closed subnet; a Flutter app stitches them together over plain HTTP on 192.168.4.x. Fail-secure boot order, 800ms relay-fire cooldown, hand-rolled JPEG SOI/EOI byte-stream decoder, and an optional Hinglish voice assistant with five-layer persistent memory. The homeowner owns the firmware.",
     theme: "maglock",
     status: "hardware-dependent",
     statusLabel: "Hardware-dependent — video demo",
     repoUrl: "https://github.com/aliarbab2009/MagLock-Protocol",
     primaryColor: "#00FF9D",
     year: 2025,
-    lastUpdatedISO: "2026-04-25",
-    stack: ["Flutter", "Dart", "ESP32", "Arduino C++", "Grok API", "WebView"],
+    lastUpdatedISO: "2026-04-26",
+    stack: [
+      "ESP32 (Arduino IDE, ArduinoJson)",
+      "ESP32-CAM (FreeRTOS, hardware JPEG)",
+      "Flutter (Dart 3+, Material 3)",
+      "Provider state",
+      "speech_to_text + flutter_tts",
+      "Inno Setup installer",
+      "Grok-3 (optional cloud LLM)",
+      "Plain HTTP/1.1, no TLS",
+    ],
   },
 ] as const;
 
