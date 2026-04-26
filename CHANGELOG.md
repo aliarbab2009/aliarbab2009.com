@@ -20,3 +20,8 @@ This file tracks notable changes to `aliarbab2009.com`. Format follows [Keep a C
 - Locked: no city, school, phone, timezone, raw Gmail, or specific college name in the deployed bundle
 - Locked: AI-bot allowlist in `robots.ts` — site is intentionally discoverable to LLM crawlers
 - Locked: JSON-LD payloads contain no PII keys (address, telephone, birthDate, etc.)
+- Refactored: forbidden-token regex source moved from the tracked `scripts/privacy-audit.mjs` into a gitignored `scripts/.privacy-patterns.local.mjs`. The public script no longer contains the literal tokens it scans for; CI populates the local file from a `PRIVACY_PATTERNS_BASE64` GitHub Actions secret before running the audit.
+
+### Fixed
+
+- `/projects/bolhisaab` was rendering dark-on-dark text in dark mode. The `.theme-bolhisaab` class re-binds tokens for cream-on-indigo, but the layout div didn't paint the cream background — so the body's dark `#0a0a0a` showed through and the dark `--color-fg` text became invisible. Layout now explicitly paints `bg-[var(--color-bg)] text-[var(--color-fg)]`. Same explicit paint applied to StockSaathi and MagLock layouts so the bug can't regress if root tokens change.
