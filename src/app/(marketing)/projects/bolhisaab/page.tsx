@@ -183,17 +183,15 @@ export default function BolHisaabPage() {
       </section>
 
       {/* § 04 — ORIGIN (problem · why me · learned + pull-quote) */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 pt-10">
         <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 04
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Origin
-          </p>
+          <div data-bh-section-header>
+            <span data-bh-section-badge>04</span>
+            <span data-bh-section-label>Origin</span>
+          </div>
         </div>
         <div className="col-span-12 md:col-span-10">
-          <div data-bh-rounded-card className="p-8">
+          <div data-bh-app-card style={{ padding: "32px" }}>
             <OriginBlock slug="bolhisaab" />
           </div>
         </div>
