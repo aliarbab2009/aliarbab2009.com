@@ -129,7 +129,8 @@
 
 .theme-bolhisaab {
   /* LIGHT variant — cream surface, indigo accent. The original
-     "indigo on cream" world identity. */
+     "indigo on cream" world identity, sourced from BolHisaab's actual
+     globals.css (G:/BolHisaab/src/app/globals.css). */
   --color-bg: #fafaf9;
   --color-fg: #18181b;
   --color-muted: #71717a;
@@ -141,6 +142,22 @@
   --color-success: #10b981;
   --color-danger: #f43f5e;
   --color-glow: color-mix(in oklch, #4f46e5, transparent 70%);
+  /* Domain-named semantic tokens — the BolHisaab insight that color
+     should follow meaning, not aesthetics. --credit (emerald) = "party
+     owes shopkeeper" (receivable). --debit (rose) = "shopkeeper owes
+     party" (payable). Naming after meaning lets a future redesign
+     rebalance one without breaking semantic intent. Available on the
+     portfolio so /projects/bolhisaab can colour stat-cards by their
+     financial polarity instead of generic-positive-vs-negative. */
+  --color-credit: #10b981;
+  --color-credit-soft: color-mix(in oklch, #10b981, transparent 85%);
+  --color-debit: #f43f5e;
+  --color-debit-soft: color-mix(in oklch, #f43f5e, transparent 85%);
+  /* Typography swaps to Inter (Latin) + Noto Sans Devanagari (Hindi)
+     so the page can render Hinglish quotes natively. Inter handles
+     romanised text, Noto Devanagari covers the Devanagari glyphs. */
+  --font-display: var(--font-inter), var(--font-noto-devanagari), system-ui, sans-serif;
+  --font-body: var(--font-inter), var(--font-noto-devanagari), system-ui, sans-serif;
   --radius-base: 16px;
   color-scheme: light;
 }
@@ -158,6 +175,12 @@
   --color-surface-2: #16162a;
   --color-border: #2c2c52;
   --color-glow: color-mix(in oklch, #818cf8, transparent 60%);
+  /* Brighter credit/debit hues for AAA contrast on the deep-indigo bg.
+     Same semantics, tuned values. */
+  --color-credit: #34d399;
+  --color-credit-soft: color-mix(in oklch, #34d399, transparent 80%);
+  --color-debit: #fb7185;
+  --color-debit-soft: color-mix(in oklch, #fb7185, transparent 80%);
   color-scheme: dark;
 }
 
