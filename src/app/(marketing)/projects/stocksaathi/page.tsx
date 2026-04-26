@@ -400,7 +400,7 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
       </section>
 
       {/* § 08 — UNIVERSE */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 08
@@ -447,6 +447,65 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
             <code className="font-mono text-sm">maxDuration</code> cap and resume from the next
             paginated <code className="font-mono text-sm">?offset=</code> on the next firing.
           </p>
+        </div>
+      </section>
+
+      {/* § 09 — POLISH */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 09
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Polish
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          <ul className="grid grid-cols-1 gap-0 border-2 border-[var(--color-border)] md:grid-cols-2">
+            {[
+              [
+                "800ms-debounced hottest-200 LRU cache",
+                "The persisted-quote cache (ss.quotes.v3) writes only the 200 hottest symbols by last-access timestamp. A one-shot legacy migration deletes pre-split Reliance values from older keys so nobody paints with stale 2024-era numbers after a service-worker refresh.",
+              ],
+              [
+                "Server-time anchor via performance.now()",
+                "The market-status badge can't be spoofed by changing the system clock. The anchor is (performance.now() at sync midpoint, server's epoch ms); serverNow() adds the monotonic delta. Flipping your laptop to '9:30 AM IST Sunday' cannot fake 'Market Open'.",
+              ],
+              [
+                "Intervention modal with 3-second read delay",
+                "Before a panic-sell, the user sees historical recovery analog data. The 'Sell anyway' button counts down 3-2-1 before enabling. Escape and overlay-click are no-ops by design — Escape shakes the Hold button instead of closing.",
+              ],
+              [
+                "Idempotency-key-based atomic apply_trade RPC",
+                "transactions.idempotency_key is UNIQUE(user_id, key); a deterministic key generated once per click is held across retries. The PL/pgSQL function row-locks the portfolio, conditionally decrements cash, upserts holdings, and inserts the transaction in one transaction.",
+              ],
+              [
+                "Chunked render with RAF yield",
+                "The MF browser paints 13,969 cards in 200-card chunks with requestAnimationFrame yields between batches; 'Tab not responding' never fires. Two cooperating IntersectionObservers (200% rootMargin to hydrate, 600% to dehydrate back to skeleton) keep the DOM bounded.",
+              ],
+              [
+                "Limit-order matcher with market-closed guard",
+                "AMOs ghosted because the matcher ran every 12s regardless of market state and trivially 'filled' against stale after-hours closes. Fix: if (!marketStatus().open) return { skipped: 'market_closed' }; before any matcher pass.",
+              ],
+            ].map(([title, body], i, arr) => (
+              <li
+                key={title}
+                className={
+                  "p-6 " +
+                  (i < arr.length - 1 ? "border-b-2 border-[var(--color-border)]" : "") +
+                  (i % 2 === 0 ? "md:border-r-2 md:border-[var(--color-border)]" : "") +
+                  (i < arr.length - 2
+                    ? "md:border-b-2 md:border-[var(--color-border)]"
+                    : "md:border-b-0")
+                }
+              >
+                <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--color-primary)] uppercase">
+                  {title}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-fg)]">{body}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </div>
