@@ -382,6 +382,110 @@ main {
 }
 
 /* ============================================================
+   MAGLOCK DECORATIVE — corner-bracket utility + ambient scan-line
+   Sourced from MagLock's Flutter widgets (lib/widgets/_CornerPainter
+   and the gradient scan-line painter). These utilities only render
+   inside the .theme-maglock scope; site-default surfaces ignore them.
+   ============================================================ */
+
+/* Corner brackets — four 12px L-shapes at element corners, drawn via
+   four ::before pseudos stacked with conic-gradient masks. Designed to
+   sit on the existing 2px borders inside .theme-maglock without
+   replacing them. Apply as `data-maglock-brackets` attribute on any
+   element you want to decorate (use attribute instead of class so it's
+   easy to scope-grep for cleanup). */
+.theme-maglock [data-maglock-brackets] {
+  position: relative;
+}
+.theme-maglock [data-maglock-brackets]::before,
+.theme-maglock [data-maglock-brackets]::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--color-primary);
+  pointer-events: none;
+}
+.theme-maglock [data-maglock-brackets]::before {
+  top: -2px;
+  left: -2px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.theme-maglock [data-maglock-brackets]::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* Ambient horizontal scan-line — 80px-tall gradient band that drifts
+   down the viewport at 60s cadence. Sits behind all content via
+   pointer-events: none. Activated by adding `data-maglock-scanline`
+   to any container that has overflow:hidden (e.g. <main>). Reduced-
+   motion users get a static gradient instead of the moving band. */
+.theme-maglock [data-maglock-scanline] {
+  position: relative;
+}
+.theme-maglock [data-maglock-scanline]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-primary), transparent 96%) 50%,
+    transparent 100%
+  );
+  background-size: 100% 80px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  animation: maglock-scanline 60s linear infinite;
+  z-index: 0;
+}
+.theme-maglock [data-maglock-scanline] > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes maglock-scanline {
+  from {
+    background-position: 0 -80px;
+  }
+  to {
+    background-position: 0 100vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-maglock [data-maglock-scanline]::after {
+    animation: none;
+    background-position: 0 50%;
+  }
+}
+
+/* Glow utility — picks a glow recipe by data attribute so a section
+   can opt into the multi-color glow palette without a class explosion.
+   Falls back to --color-glow (the theme's primary glow) when no
+   attribute is set. */
+.theme-maglock [data-maglock-glow="green"] {
+  box-shadow: var(--glow-green);
+}
+.theme-maglock [data-maglock-glow="cyan"] {
+  box-shadow: var(--glow-cyan);
+}
+.theme-maglock [data-maglock-glow="red"] {
+  box-shadow: var(--glow-red);
+}
+.theme-maglock [data-maglock-glow="amber"] {
+  box-shadow: var(--glow-amber);
+}
+.theme-maglock [data-maglock-glow="purple"] {
+  box-shadow: var(--glow-purple);
+}
+
+/* ============================================================
    PRINT — admissions-officer-friendly PDF / paper output
    Goal: black ink on white paper, no shell chrome, no decoration,
    page-break-aware, URLs visible inline. Forces light-style tokens
