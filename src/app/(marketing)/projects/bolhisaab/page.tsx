@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { getProjectBySlug } from "@/config/projects";
 import { siteConfig } from "@/config/site";
+import BolHisaabVoiceDemo from "@/components/project/bolhisaab-voice-demo";
 import { OriginBlock } from "@/components/project/origin-block";
 import { JsonLd } from "@/components/seo/json-ld";
 import { projectJsonLd } from "@/lib/json-ld";
@@ -26,36 +27,31 @@ export default function BolHisaabPage() {
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-6 pt-16 pb-16 sm:pt-20">
       <JsonLd data={projectJsonLd("bolhisaab")} />
-      <div className="brutalist-grid" aria-hidden />
 
       {/* MASTHEAD */}
-      <header className="mb-16 grid grid-cols-12 gap-4 border-b-2 border-[var(--color-border)] pb-6">
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Author
-          </p>
-          <p className="font-mono text-sm font-medium">{siteConfig.author}</p>
+      <header
+        data-bh-app-card
+        className="mb-16 grid grid-cols-12 gap-4"
+        style={{ padding: "20px 24px" }}
+      >
+        <div className="col-span-6 flex flex-col gap-1.5 md:col-span-3">
+          <p className="text-[11px] font-medium text-[var(--color-muted)]">Author</p>
+          <p className="text-sm font-semibold">{siteConfig.author}</p>
         </div>
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Project
-          </p>
-          <p className="font-mono text-sm font-medium">02 / {project.name}</p>
+        <div className="col-span-6 flex flex-col gap-1.5 md:col-span-3">
+          <p className="text-[11px] font-medium text-[var(--color-muted)]">Project</p>
+          <p className="text-sm font-semibold">02 / {project.name}</p>
         </div>
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Status
-          </p>
-          <p className="font-mono text-sm font-medium text-[var(--color-primary)]">
-            <span data-bh-mic-pulse className="mr-2 inline-block align-middle"></span>
+        <div className="col-span-6 flex flex-col gap-1.5 md:col-span-3">
+          <p className="text-[11px] font-medium text-[var(--color-muted)]">Status</p>
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)]">
+            <span data-bh-mic-pulse className="inline-block"></span>
             {project.statusLabel}
           </p>
         </div>
-        <div className="col-span-6 flex flex-col gap-2 md:col-span-3">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            Navigate
-          </p>
-          <p className="font-mono text-sm font-medium">
+        <div className="col-span-6 flex flex-col gap-1.5 md:col-span-3">
+          <p className="text-[11px] font-medium text-[var(--color-muted)]">Navigate</p>
+          <p className="text-sm font-semibold">
             <Link href="/projects" className="hover:text-[var(--color-primary)]">
               ← projects
             </Link>
