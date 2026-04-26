@@ -451,7 +451,7 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
       </section>
 
       {/* § 09 — POLISH */}
-      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
         <div className="col-span-12 md:col-span-2">
           <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
             § 09
@@ -503,6 +503,103 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
                   {title}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-[var(--color-fg)]">{body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* § 10 — LIMITATIONS */}
+      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 10
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Honest limits
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-3 md:col-span-10">
+          <ul className="ml-6 max-w-prose list-disc space-y-3 text-base leading-relaxed text-[var(--color-fg)]">
+            <li>
+              <strong className="font-medium">
+                Yahoo NSE data is officially 15-minute delayed.
+              </strong>{" "}
+              The &ldquo;LIVE&rdquo; badge flips to &ldquo;DELAYED&rdquo; via the{" "}
+              <code className="font-mono text-sm">staleAgeMinutes</code> flag when Yahoo&apos;s own{" "}
+              <code className="font-mono text-sm">ts</code> is older than 5 minutes during market
+              hours. The product calls itself a paper-trading simulator, never a real-time tick
+              feed.
+            </li>
+            <li>
+              <strong className="font-medium">The coach never gives buy/sell advice.</strong> The
+              decision is structural, not stylistic — the prompt forbids it, the output filter
+              blocks 25 forbidden phrases, the deterministic detectors carry the regulatorily
+              sensitive output.
+            </li>
+            <li>
+              <strong className="font-medium">
+                SELL-side limit orders don&apos;t reserve quantity.
+              </strong>{" "}
+              The schema comment is candid:{" "}
+              <em>
+                &ldquo;multi-order users can oversell. For the pitch scale this is
+                acceptable.&rdquo;
+              </em>
+            </li>
+            <li>
+              <strong className="font-medium">NSE 2026 holiday list is hardcoded.</strong> NSE
+              doesn&apos;t expose a public holiday API; the file flags itself for annual update.
+            </li>
+            <li>
+              <strong className="font-medium">No real money.</strong> No real trades, no real advice
+              — the legal posture that lets a teen-targeted app sidestep India&apos;s
+              investor-suitability regulations.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* § 11 — NUMBERS */}
+      <section className="grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
+        <div className="col-span-12 md:col-span-2">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
+            § 11
+          </p>
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
+            Numbers
+          </p>
+        </div>
+        <div className="col-span-12 md:col-span-10">
+          <ul className="grid grid-cols-2 gap-0 border-2 border-[var(--color-border)] md:grid-cols-4">
+            {[
+              ["2,686", "NSE equities + ETFs"],
+              ["13,969", "AMFI mutual funds"],
+              ["4-tier", "upstream failover"],
+              ["4-tier", "fundamentals fallback"],
+              ["9", "deterministic bias detectors"],
+              ["3", "SEBI guardrail layers"],
+              ["8", "cron windows daily"],
+              ["5s / 300s", "market-open / closed TTL"],
+              ["30s", "circuit-breaker window"],
+              ["0", "pip dependencies"],
+              ["16", "atomic SECURITY DEFINER RPCs"],
+              ["paise", "all money as bigint"],
+            ].map(([num, label], i) => (
+              <li
+                key={label}
+                className={
+                  "border-[var(--color-border)] p-5 " +
+                  (i % 2 === 0 ? "border-r-2" : "") +
+                  (i < 10 ? "border-b-2" : "") +
+                  "md:border-r-2" +
+                  (i < 8 ? "md:border-b-2" : "")
+                }
+              >
+                <p className="font-mono text-2xl font-medium text-[var(--color-primary)]">{num}</p>
+                <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
+                  {label}
+                </p>
               </li>
             ))}
           </ul>
