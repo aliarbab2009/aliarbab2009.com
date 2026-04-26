@@ -398,18 +398,119 @@ meta.indexDrop = Math.round(realDropPct * 10) / 10;`}
       </section>
 
       {/* § 08 — UNIVERSE */}
-      <section className="mb-20 grid grid-cols-12 gap-4 border-t-2 border-[var(--color-border)] pt-10">
-        <div className="col-span-12 md:col-span-2">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-muted)] uppercase">
-            § 08
-          </p>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase">
-            Universe
-          </p>
+      <section className="mb-20 grid grid-cols-12 gap-4 pt-10">
+        <div className="col-span-12 flex flex-col gap-1 md:col-span-2">
+          <p data-ss-section-number>§ 08</p>
+          <p data-ss-section-label>Universe</p>
         </div>
         <div className="col-span-12 flex flex-col gap-6 md:col-span-10">
+          {/* Live ticker mockup — six headline NSE/BSE symbols rendered
+              as a single horizontal strip with mock prices in tabular-num
+              mono, up/down deltas in primary/danger. Pure server JSX
+              wrapped in a rounded card so it reads as an embedded
+              product surface. The pulsing dot signals "live feed". */}
+          <div data-ss-rounded-card className="flex flex-col gap-3 px-5 py-4 sm:px-6">
+            <div className="flex items-center justify-between">
+              <span className="inline-flex items-center gap-2 text-[10px] font-semibold tracking-[0.18em] text-[var(--color-muted)] uppercase">
+                <span data-ss-pulse-dot className="inline-block align-middle"></span>
+                Live · NSE
+              </span>
+              <span className="font-mono text-[10px] tracking-tight text-[var(--color-muted)]">
+                15:14:32 IST
+              </span>
+            </div>
+            <div className="flex flex-nowrap items-center gap-x-6 gap-y-2 overflow-x-auto font-mono text-[12px] whitespace-nowrap tabular-nums">
+              <span className="inline-flex items-baseline gap-2">
+                <span className="font-semibold text-[var(--color-fg)]">RELIANCE</span>
+                <span className="text-[var(--color-fg)]">1,247.30</span>
+                <span
+                  aria-hidden
+                  className="inline-flex items-baseline gap-0.5"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  <span>▲</span>
+                  <span>+0.4%</span>
+                </span>
+              </span>
+              <span aria-hidden className="text-[var(--color-border)]">
+                |
+              </span>
+              <span className="inline-flex items-baseline gap-2">
+                <span className="font-semibold text-[var(--color-fg)]">TCS</span>
+                <span className="text-[var(--color-fg)]">4,089.50</span>
+                <span
+                  aria-hidden
+                  className="inline-flex items-baseline gap-0.5"
+                  style={{ color: "#eb5757" }}
+                >
+                  <span>▼</span>
+                  <span>−0.2%</span>
+                </span>
+              </span>
+              <span aria-hidden className="text-[var(--color-border)]">
+                |
+              </span>
+              <span className="inline-flex items-baseline gap-2">
+                <span className="font-semibold text-[var(--color-fg)]">INFY</span>
+                <span className="text-[var(--color-fg)]">1,856.75</span>
+                <span
+                  aria-hidden
+                  className="inline-flex items-baseline gap-0.5"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  <span>▲</span>
+                  <span>+1.1%</span>
+                </span>
+              </span>
+              <span aria-hidden className="text-[var(--color-border)]">
+                |
+              </span>
+              <span className="inline-flex items-baseline gap-2">
+                <span className="font-semibold text-[var(--color-fg)]">HDFCBANK</span>
+                <span className="text-[var(--color-fg)]">1,634.20</span>
+                <span
+                  aria-hidden
+                  className="inline-flex items-baseline gap-0.5"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  <span>▲</span>
+                  <span>+0.6%</span>
+                </span>
+              </span>
+              <span aria-hidden className="text-[var(--color-border)]">
+                |
+              </span>
+              <span className="inline-flex items-baseline gap-2">
+                <span className="font-semibold text-[var(--color-fg)]">SBIN</span>
+                <span className="text-[var(--color-fg)]">821.45</span>
+                <span
+                  aria-hidden
+                  className="inline-flex items-baseline gap-0.5"
+                  style={{ color: "#eb5757" }}
+                >
+                  <span>▼</span>
+                  <span>−0.3%</span>
+                </span>
+              </span>
+              <span aria-hidden className="text-[var(--color-border)]">
+                |
+              </span>
+              <span className="inline-flex items-baseline gap-2">
+                <span className="font-semibold text-[var(--color-fg)]">WIPRO</span>
+                <span className="text-[var(--color-fg)]">542.80</span>
+                <span
+                  aria-hidden
+                  className="inline-flex items-baseline gap-0.5"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  <span>▲</span>
+                  <span>+2.4%</span>
+                </span>
+              </span>
+            </div>
+          </div>
           <h2
-            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-medium tracking-tight"
+            className="text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-bold tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             2,686 NSE equities and 13,969 mutual funds, refreshed before market open.{" "}
