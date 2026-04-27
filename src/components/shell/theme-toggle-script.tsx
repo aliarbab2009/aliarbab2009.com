@@ -1,10 +1,12 @@
+import { headers } from "next/headers";
+
 /**
  * Inline-script body for the ThemeToggle button.
  *
- * Plain string here so the React component (added in a follow-up commit)
- * can stamp it inside <script dangerouslySetInnerHTML> with a per-request
- * CSP nonce. Keeping it as a const at module scope makes the source easy
- * to grep and audit independently of the component plumbing.
+ * Plain string at module scope so <ThemeToggleScript /> below can stamp
+ * it inside <script dangerouslySetInnerHTML> with a per-request CSP
+ * nonce. Keeping the actual click-flip logic as a string makes it easy
+ * to grep + audit independently of the component plumbing.
  *
  * What the script does at runtime:
  *   1. Locates the button via document.currentScript.previousElementSibling
@@ -55,3 +57,21 @@ export const THEME_TOGGLE_SCRIPT = `(function(){
   });
   syncLabel();
 })();`;
+
+/**
+ * <ThemeToggleScript /> — server component that emits the inline
+ * <script> tag stamped with the per-request CSP nonce from middleware.
+ *
+ * Must be rendered IMMEDIATELY AFTER a <button data-theme-toggle> in the
+ * DOM tree — the inline script binds to the script's
+ * previousElementSibling. Render order matters; do not interleave other
+ * elements between the button and this component.
+ *
+ * Reads the nonce the same way <ThemeScript> does. Strict CSP allows
+ * nonce-attributed inline scripts via 'strict-dynamic' + 'nonce-...'
+ * source expressions in middleware.ts.
+ */
+export async function ThemeToggleScript() {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  return <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_TOGGLE_SCRIPT }} />;
+}
