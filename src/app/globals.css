@@ -291,6 +291,36 @@ main {
 }
 
 /* ============================================================
+   THEME TOGGLE ICON VISIBILITY
+   The toggle button always renders BOTH SVG icons; CSS picks the
+   one to show based on :root[data-theme]. This is intentional —
+   if React state controlled visibility, hydration timing would
+   leave a window where the first click silently no-op'd on cold
+   loads (the v1 "needs 2 clicks to flip" bug). With CSS-driven
+   visibility, the button is correct from first paint regardless
+   of hydration progress, and the click handler is purely a DOM
+   attribute write — no React state to be stale.
+   ============================================================ */
+
+[data-theme-toggle-sun],
+[data-theme-toggle-moon] {
+  display: none;
+}
+:root[data-theme="dark"] [data-theme-toggle-sun] {
+  display: inline-block;
+}
+:root[data-theme="light"] [data-theme-toggle-moon] {
+  display: inline-block;
+}
+/* Pre-paint fallback — if data-theme hasn't been set yet (SSR phase
+   before <ThemeScript> runs), default to the sun icon. <ThemeScript>
+   is inline + blocking in <head>, so this fallback should only ever
+   flash for the first paint of the very first request. */
+:root:not([data-theme]) [data-theme-toggle-sun] {
+  display: inline-block;
+}
+
+/* ============================================================
    VIEW TRANSITIONS — cross-document fade between routes.
    Enabled in Chromium 126+ / WebKit 18+; harmless no-op in
    browsers without support (Firefox, older Safari). The

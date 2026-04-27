@@ -51,11 +51,17 @@ function flipTheme() {
   if (typeof window === "undefined") return;
   const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", next);
+  // Force synchronous style recalc — same defeat-recalc-skip dance as
+  // <ThemeToggle>'s onClick. Keeps both flip surfaces in lockstep.
+  void document.body.offsetHeight;
   try {
     window.localStorage.setItem("theme", next);
   } catch {
     /* localStorage unavailable in some embedded contexts — ignore */
   }
+  // Tell <ThemeToggle> in the nav to re-read state so its aria-label
+  // stays in sync after a palette-driven flip.
+  window.dispatchEvent(new Event("themechange"));
 }
 
 function buildCommands(): CommandItem[] {
