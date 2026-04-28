@@ -42,6 +42,17 @@ type LogEntry = {
 type State = {
   door1: DoorState;
   door2: DoorState;
+  /**
+   * Where each door is heading mid-transition. The reducer reads this on
+   * FINISH_TRANSITION so the resolver effect doesn't have to remember
+   * what it asked for. Storing intent in state lets a single resolver
+   * effect (watching `door` only) handle BOTH user clicks AND auto-lock —
+   * solves the bug where the auto-lock effect's own dispatch changed its
+   * deps, triggered React's cleanup, and clearTimeout'd the relock
+   * before it could fire.
+   */
+  pending1: "locked" | "unlocked" | null;
+  pending2: "locked" | "unlocked" | null;
   countdown1: number;
   countdown2: number;
   connection: ConnectionStatus;
@@ -50,8 +61,8 @@ type State = {
 };
 
 type Action =
-  | { type: "BEGIN_TRANSITION"; door: DoorId }
-  | { type: "FINISH_TRANSITION"; door: DoorId; nextState: "locked" | "unlocked" }
+  | { type: "BEGIN_TRANSITION"; door: DoorId; target: "locked" | "unlocked" }
+  | { type: "FINISH_TRANSITION"; door: DoorId }
   | { type: "TICK_COUNTDOWN"; door: DoorId }
   | { type: "SET_CONNECTION"; status: ConnectionStatus };
 
@@ -77,26 +88,36 @@ function pushLog(state: State, text: string): State {
   return { ...state, log: next, logCounter: state.logCounter + 1 };
 }
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "BEGIN_TRANSITION": {
-      if (action.door === 1) return { ...state, door1: "transitioning" };
-      return { ...state, door2: "transitioning" };
+      if (action.door === 1) {
+        return { ...state, door1: "transitioning", pending1: action.target };
+      }
+      return { ...state, door2: "transitioning", pending2: action.target };
     }
     case "FINISH_TRANSITION": {
-      const isUnlock = action.nextState === "unlocked";
+      // Resolve to whatever was pending. We deliberately don't take the
+      // target from the action — both click handlers and auto-lock route
+      // through BEGIN_TRANSITION first, so the pending field is the
+      // single source of truth for "where this transition is going."
+      const target = action.door === 1 ? state.pending1 : state.pending2;
+      if (target == null) return state; // safety: stale FINISH after an unmount race
+      const isUnlock = target === "unlocked";
       const text = `DOOR ${action.door} ${isUnlock ? "UNLOCKED" : "LOCKED"}`;
       const updated = pushLog(state, text);
       if (action.door === 1) {
         return {
           ...updated,
-          door1: action.nextState,
+          door1: target,
+          pending1: null,
           countdown1: isUnlock ? AUTO_LOCK_SECONDS : 0,
         };
       }
       return {
         ...updated,
-        door2: action.nextState,
+        door2: target,
+        pending2: null,
         countdown2: isUnlock ? AUTO_LOCK_SECONDS : 0,
       };
     }
@@ -114,9 +135,11 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-const INITIAL_STATE: State = {
+export const INITIAL_STATE: State = {
   door1: "locked",
   door2: "locked",
+  pending1: null,
+  pending2: null,
   countdown1: 0,
   countdown2: 0,
   connection: "connected",
@@ -161,30 +184,50 @@ export default function MagLockControlPanel() {
     return () => window.clearInterval(id);
   }, []);
 
-  // Auto-lock trigger — when an unlocked door's countdown hits 0, queue
-  // the relock transition. Done as an effect on the state so we react
-  // exactly once per zero-crossing and not on every tick.
+  // Auto-lock TRIGGERS — when an unlocked door's countdown hits 0, just
+  // dispatch BEGIN_TRANSITION. We deliberately do NOT schedule the relock
+  // setTimeout here; that's the resolver effect's job. The earlier code
+  // dispatched + setTimeout in one effect, but the dispatch synchronously
+  // changed `state.door1` from "unlocked" to "transitioning", which
+  // changed this effect's deps, which fired its cleanup, which
+  // clearTimeout'd the relock — so the door froze in "transitioning"
+  // forever. Splitting into trigger + resolver fixes this.
   useEffect(() => {
     if (state.door1 === "unlocked" && state.countdown1 === 0) {
-      dispatch({ type: "BEGIN_TRANSITION", door: 1 });
-      const t = window.setTimeout(() => {
-        if (!mountedRef.current) return;
-        dispatch({ type: "FINISH_TRANSITION", door: 1, nextState: "locked" });
-      }, TRANSITION_MS);
-      return () => window.clearTimeout(t);
+      dispatch({ type: "BEGIN_TRANSITION", door: 1, target: "locked" });
     }
   }, [state.door1, state.countdown1]);
 
   useEffect(() => {
     if (state.door2 === "unlocked" && state.countdown2 === 0) {
-      dispatch({ type: "BEGIN_TRANSITION", door: 2 });
-      const t = window.setTimeout(() => {
-        if (!mountedRef.current) return;
-        dispatch({ type: "FINISH_TRANSITION", door: 2, nextState: "locked" });
-      }, TRANSITION_MS);
-      return () => window.clearTimeout(t);
+      dispatch({ type: "BEGIN_TRANSITION", door: 2, target: "locked" });
     }
   }, [state.door2, state.countdown2]);
+
+  // Transition RESOLVER — single effect per door that watches for
+  // door=transitioning and schedules the FINISH_TRANSITION 300ms later.
+  // Runs ONCE when door enters "transitioning" (whether from a click or
+  // from auto-lock). The cleanup is safe here because deps only change
+  // again when door leaves "transitioning", which is exactly what
+  // FINISH_TRANSITION causes — by which time the timeout has already
+  // fired, so clearTimeout is a no-op.
+  useEffect(() => {
+    if (state.door1 !== "transitioning") return;
+    const t = window.setTimeout(() => {
+      if (!mountedRef.current) return;
+      dispatch({ type: "FINISH_TRANSITION", door: 1 });
+    }, TRANSITION_MS);
+    return () => window.clearTimeout(t);
+  }, [state.door1]);
+
+  useEffect(() => {
+    if (state.door2 !== "transitioning") return;
+    const t = window.setTimeout(() => {
+      if (!mountedRef.current) return;
+      dispatch({ type: "FINISH_TRANSITION", door: 2 });
+    }, TRANSITION_MS);
+    return () => window.clearTimeout(t);
+  }, [state.door2]);
 
   // Connection flicker — every 8s, dip to "connecting" amber for 800ms
   // then back to "connected" green. Pure visual life. Skipped under
@@ -202,24 +245,20 @@ export default function MagLockControlPanel() {
     return () => window.clearInterval(id);
   }, [reducedMotion]);
 
+  // Click handlers just dispatch BEGIN_TRANSITION with the desired target;
+  // the resolver effect above schedules the FINISH_TRANSITION setTimeout.
+  // No setTimeout here — keeping all transition resolution in one place
+  // means clicks and auto-lock can never race each other's timers.
   const click1 = useCallback(() => {
     if (state.door1 === "transitioning") return;
     const target: "locked" | "unlocked" = state.door1 === "locked" ? "unlocked" : "locked";
-    dispatch({ type: "BEGIN_TRANSITION", door: 1 });
-    window.setTimeout(() => {
-      if (!mountedRef.current) return;
-      dispatch({ type: "FINISH_TRANSITION", door: 1, nextState: target });
-    }, TRANSITION_MS);
+    dispatch({ type: "BEGIN_TRANSITION", door: 1, target });
   }, [state.door1]);
 
   const click2 = useCallback(() => {
     if (state.door2 === "transitioning") return;
     const target: "locked" | "unlocked" = state.door2 === "locked" ? "unlocked" : "locked";
-    dispatch({ type: "BEGIN_TRANSITION", door: 2 });
-    window.setTimeout(() => {
-      if (!mountedRef.current) return;
-      dispatch({ type: "FINISH_TRANSITION", door: 2, nextState: target });
-    }, TRANSITION_MS);
+    dispatch({ type: "BEGIN_TRANSITION", door: 2, target });
   }, [state.door2]);
 
   const connectionLabel = useMemo(() => {
