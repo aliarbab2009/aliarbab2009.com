@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_Devanagari, Orbitron, Rajdhani, VT323 } from "next/font/google";
+import { headers } from "next/headers";
 import localFont from "next/font/local";
 
 import { JsonLd } from "@/components/seo/json-ld";
@@ -137,7 +138,16 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Resolve the per-request CSP nonce ONCE at the root. We pass it as a
+  // prop to <ThemeScript /> (and any other inline-script consumers in
+  // children) so those components can stay synchronous. If they each
+  // awaited headers() themselves, Next 15 / React 19 would defer them
+  // into RSC streaming (`self.__next_f.push(...)`) and the script would
+  // only execute AFTER hydration — which defeats the whole "set
+  // data-theme pre-paint to prevent FOUC" point.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html
       lang="en"
@@ -153,7 +163,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head>
-        <ThemeScript />
+        <ThemeScript nonce={nonce} />
         <JsonLd data={personJsonLd()} />
       </head>
       <body className="min-h-dvh antialiased">

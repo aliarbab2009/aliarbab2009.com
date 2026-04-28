@@ -1,5 +1,3 @@
-import { headers } from "next/headers";
-
 /**
  * ThemeScript — inline blocking script that sets data-theme on <html>
  * BEFORE any CSS paints. Prevents FOUC when user's preferred theme
@@ -12,11 +10,21 @@ import { headers } from "next/headers";
  *
  * Stringified + inlined so it runs synchronously. No network hop.
  *
- * Reads the per-request nonce from middleware (src/middleware.ts) so
- * the strict CSP allows this inline <script> via 'nonce-...' source.
- * Other inline scripts that Next.js injects (chunk loader, hydration
- * data) get the same nonce stamped automatically when middleware
- * sets x-nonce on the request.
+ * IMPORTANT — why this is sync, not async:
+ * The previous version was an async server component that called
+ * `await headers()` itself to read the per-request nonce. Async server
+ * components in Next.js 15 / React 19 stream their output via RSC
+ * (`self.__next_f.push(...)`) — which means the inline script ends up
+ * encoded as JSON inside an RSC payload and only executes AFTER
+ * hydration completes, NOT pre-paint. That defeats the entire purpose
+ * of an FOUC-prevention script. Cold loads of `/` would land with
+ * `data-theme=null` because the script hadn't run yet.
+ *
+ * Fix: this component is synchronous and accepts `nonce` as a prop.
+ * The async `await headers()` happens once at the root layout (which
+ * naturally awaits at the top of the tree); the resolved nonce is
+ * passed down. The <script> tag is then emitted in the initial HTML
+ * stream as a real executable element, not an RSC payload string.
  */
 const INLINE_SCRIPT = `
 (() => {
@@ -34,7 +42,6 @@ const INLINE_SCRIPT = `
 })();
 `;
 
-export async function ThemeScript() {
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+export function ThemeScript({ nonce }: { nonce?: string }) {
   return <script nonce={nonce} dangerouslySetInnerHTML={{ __html: INLINE_SCRIPT }} />;
 }
