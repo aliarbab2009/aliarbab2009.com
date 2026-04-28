@@ -73,7 +73,43 @@ export async function POST(request: Request) {
 
   const parsed = ContactSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+    // Return field-level error map so the form can surface "what
+    // exactly was wrong with my submission" instead of a generic
+    // "Invalid form data" string. Zod's flatten gives us
+    // `{ fieldErrors: { email: ["…"], message: ["…"] } }`.
+    const flat = parsed.error.flatten();
+    const fieldErrors: Record<string, string> = {};
+    for (const [field, msgs] of Object.entries(flat.fieldErrors)) {
+      if (msgs && msgs.length > 0) {
+        // Friendlier copy than Zod's defaults for the common cases.
+        const raw = msgs[0]!;
+        if (field === "name") {
+          fieldErrors.name = raw.includes("at least")
+            ? "Please enter your name (min 2 characters)."
+            : raw;
+        } else if (field === "email") {
+          fieldErrors.email = raw.includes("email") ? "Please enter a valid email address." : raw;
+        } else if (field === "message") {
+          if (raw.includes("at least")) {
+            fieldErrors.message =
+              "Message is too short — please write at least 10 characters so I have something to read.";
+          } else if (raw.includes("at most") || raw.includes("max")) {
+            fieldErrors.message = "Message is too long — please trim it under 5000 characters.";
+          } else {
+            fieldErrors.message = raw;
+          }
+        } else {
+          fieldErrors[field] = raw;
+        }
+      }
+    }
+    return NextResponse.json(
+      {
+        error: "Please fix the highlighted fields and try again.",
+        fieldErrors,
+      },
+      { status: 400 },
+    );
   }
   const { name, email, message, company } = parsed.data;
 
