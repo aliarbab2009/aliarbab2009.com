@@ -151,6 +151,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="en"
+      // Static default — the inline <ThemeScript> below may UPDATE
+      // this to "light" on first paint based on localStorage or
+      // prefers-color-scheme. Having it server-rendered means React's
+      // hydration sees data-theme on both sides (server and client),
+      // even after the script mutates it. Without this, server emits
+      // <html> with no data-theme; ThemeScript writes one pre-paint;
+      // React hydration sees an attribute mismatch on <html> AND if
+      // any other text mismatch fires error #418, React's recovery
+      // unmounts/remounts the tree and the data-theme is lost.
+      // suppressHydrationWarning + a stable default attribute is the
+      // canonical pattern for theme toggles in App Router.
+      data-theme="dark"
       className={cn(
         spaceGrotesk.variable,
         jetbrainsMono.variable,
