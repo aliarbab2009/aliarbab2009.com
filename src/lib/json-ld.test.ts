@@ -74,7 +74,7 @@ describe("personJsonLd", () => {
   });
 
   it("sameAs only includes the GitHub profile (no LinkedIn / Twitter / etc.)", () => {
-    expect(json.sameAs).toEqual(["https://github.com/aliarbab2009"]);
+    expect(json.sameAs).toEqual(["https://github.com/Ali-Arbab"]);
   });
 });
 

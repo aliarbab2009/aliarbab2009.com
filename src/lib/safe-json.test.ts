@@ -65,7 +65,7 @@ describe("safeStringify", () => {
       "@type": "Person",
       name: "Ali Arbab",
       url: "https://aliarbab2009.com",
-      sameAs: ["https://github.com/aliarbab2009"],
+      sameAs: ["https://github.com/Ali-Arbab"],
     };
     const out = safeStringify(obj);
     expect(JSON.parse(out)).toEqual(obj);

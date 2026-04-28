@@ -40,9 +40,9 @@ describe("PROJECTS catalog", () => {
     }
   });
 
-  it("every project has a github repo url under the aliarbab2009 namespace", () => {
+  it("every project has a github repo url under the Ali-Arbab namespace", () => {
     for (const p of PROJECTS) {
-      expect(p.repoUrl).toMatch(/^https:\/\/github\.com\/aliarbab2009\//);
+      expect(p.repoUrl).toMatch(/^https:\/\/github\.com\/Ali-Arbab\//);
     }
   });
 });
