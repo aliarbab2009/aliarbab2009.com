@@ -55,6 +55,14 @@ type State = {
   pending2: "locked" | "unlocked" | null;
   countdown1: number;
   countdown2: number;
+  /**
+   * User-configurable auto-lock duration in seconds. Mirrors the Flutter
+   * app's settings.autoLockTimerSeconds (default 10, range 3-120). The
+   * slider in the panel writes this via SET_AUTO_LOCK_SECONDS. New
+   * unlocks pick it up immediately; in-flight countdowns are NOT
+   * retroactively restarted (matches the real app).
+   */
+  autoLockSeconds: number;
   connection: ConnectionStatus;
   log: LogEntry[];
   logCounter: number;
@@ -64,9 +72,14 @@ type Action =
   | { type: "BEGIN_TRANSITION"; door: DoorId; target: "locked" | "unlocked" }
   | { type: "FINISH_TRANSITION"; door: DoorId }
   | { type: "TICK_COUNTDOWN"; door: DoorId }
+  | { type: "SET_AUTO_LOCK_SECONDS"; value: number }
   | { type: "SET_CONNECTION"; status: ConnectionStatus };
 
-const AUTO_LOCK_SECONDS = 30;
+// Slider bounds + default match the Flutter app's
+// settings_screen.dart timer dial (lib/widgets/timer_dial_widget.dart).
+export const AUTO_LOCK_MIN_SECONDS = 3;
+export const AUTO_LOCK_MAX_SECONDS = 120;
+export const AUTO_LOCK_DEFAULT_SECONDS = 10;
 const TRANSITION_MS = 300;
 
 function pad2(n: number): string {
@@ -111,14 +124,14 @@ export function reducer(state: State, action: Action): State {
           ...updated,
           door1: target,
           pending1: null,
-          countdown1: isUnlock ? AUTO_LOCK_SECONDS : 0,
+          countdown1: isUnlock ? state.autoLockSeconds : 0,
         };
       }
       return {
         ...updated,
         door2: target,
         pending2: null,
-        countdown2: isUnlock ? AUTO_LOCK_SECONDS : 0,
+        countdown2: isUnlock ? state.autoLockSeconds : 0,
       };
     }
     case "TICK_COUNTDOWN": {
@@ -128,6 +141,16 @@ export function reducer(state: State, action: Action): State {
       }
       const next = Math.max(0, state.countdown2 - 1);
       return { ...state, countdown2: next };
+    }
+    case "SET_AUTO_LOCK_SECONDS": {
+      // Clamp to [MIN, MAX] so a manually-dispatched bad value can't
+      // brick the panel. The slider input also enforces the range, but
+      // belt-and-suspenders here keeps the reducer self-defending.
+      const clamped = Math.max(
+        AUTO_LOCK_MIN_SECONDS,
+        Math.min(AUTO_LOCK_MAX_SECONDS, Math.round(action.value)),
+      );
+      return { ...state, autoLockSeconds: clamped };
     }
     case "SET_CONNECTION": {
       return { ...state, connection: action.status };
@@ -142,6 +165,7 @@ export const INITIAL_STATE: State = {
   pending2: null,
   countdown1: 0,
   countdown2: 0,
+  autoLockSeconds: AUTO_LOCK_DEFAULT_SECONDS,
   connection: "connected",
   log: [],
   logCounter: 0,
